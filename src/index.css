@@ -20,4 +20,24 @@ body {
     padding-top: 4.5rem;
     padding-bottom: 3rem;
     margin: auto;
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    overflow-y: scroll;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+body::-webkit-scrollbar {
+    display: none;
+}
+
+html {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    overflow-y: scroll;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+html::-webkit-scrollbar {
+    display: none;
 }

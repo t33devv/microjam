@@ -1,6 +1,44 @@
+import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 
 function Navbar() {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+     useEffect(() => {
+        // Check if user is authenticated
+        fetch('https://microjam-backend.onrender.com/auth/user', {
+            credentials: 'include'
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.authenticated) {
+                    setUser(data.user);
+                }
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error('Auth check failed:', err);
+                setLoading(false);
+            });
+    }, []);
+
+    const handleLogin = () => {
+    window.location.href = 'https://microjam-backend.onrender.com/auth/discord';
+  };
+
+  const handleLogout = async () => {
+        try {
+            await fetch('https://microjam-backend.onrender.com/auth/logout', {
+                credentials: 'include'
+            });
+            setUser(null);
+            window.location.href = '/';
+        } catch (err) {
+            console.error('Logout failed:', err);
+        }
+    };
+
   return (
     <div className="grid grid-cols-custom-layout w-full gap-4">
         <div className="flex justify-start items-center">
@@ -9,7 +47,7 @@ function Navbar() {
             </p>
         </div>
         <div className="flex justify-end items-center">
-            <p className="flex justify-center items-center font-bold text-lg">
+            <p className="flex justify-center items-center font-bold text-base">
                 <span className="text-primary underline">
                     <Link to="/">home</Link>
                 </span>
@@ -31,6 +69,25 @@ function Navbar() {
                 <span className="text-primary underline">
                     <Link to="/voting">voting</Link>
                 </span>
+                <span className="text-muted mx-[0.5rem]">
+                    /
+                </span>
+                {loading ? (
+                    <span className="text-muted">...</span>
+                ) : user ? (
+                    <span className="text-white italic underline relative group border border-white px-2 py-1">
+                        <a href="#" onClick={handleLogout} className="cursor-pointer">
+                            *{user.username}*
+                        </a>
+                        <span className="absolute bottom-full left-1 transform -translate-x-1/2 mb-2 px-2 py-1 bg-bg border border-li text-nm text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                            click to sign out
+                        </span>
+                    </span>
+                ) : (
+                    <span className="text-primary underline">
+                        <a href="#" onClick={handleLogin}>login</a>
+                    </span>
+                )}
             </p>
         </div>
     </div>
