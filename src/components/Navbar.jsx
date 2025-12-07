@@ -55,7 +55,7 @@ function Navbar() {
 
     const handleLogin = () => {
     // Use direct backend URL for OAuth (not proxied)
-    window.location.href = 'https://microjam-backend.onrender.com/auth/discord';
+    window.location.href = 'https://microjam-backend-8l29.vercel.app/auth/discord';
 };
 
     const handleLogout = async () => {
