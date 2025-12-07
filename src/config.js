@@ -1,5 +1,5 @@
 const API_URL = import.meta.env.MODE === 'production' 
-  ? 'https://microjam-backend.onrender.com' 
+  ? '/api'  // Proxied through Vercel - same domain!
   : 'http://localhost:3000';
 
 export { API_URL };

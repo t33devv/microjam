@@ -1,8 +1,12 @@
 {
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/api/auth/:path*",
+      "destination": "https://microjam-backend.onrender.com/auth/:path*"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "https://microjam-backend.onrender.com/:path*"
     }
   ]
 }
