@@ -12,7 +12,7 @@ function Jams() {
             <div>
                 <p className="text-white text-2xl font-bold mt-[6rem]">📜 our (long) history of jams:</p>
             </div>
-            <div className="grid grid-cols-2 gap-4 mt-[2rem]">
+            <div className="grid grid-cols-2 gap-10 mt-[3rem]">
                 {sortedJams.map((jam) => {
                     return (
                         <Jam 

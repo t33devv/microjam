@@ -1,6 +1,17 @@
 import { Link } from "react-router-dom"
 
+import { jams } from "../data/jams";
+
+import Jam from "../components/Jam";
+
 function Home() {
+    let upcomingJam = null;
+    for (const jam of jams) {
+        if (jam.status === "upcoming") {
+            upcomingJam = jam;
+            break;
+        }
+    }
   return (
     <>
         <div>
@@ -21,6 +32,12 @@ function Home() {
 
         <div>
             <p className="text-white text-2xl font-bold mt-[4rem]">⏳ upcoming jam</p>
+            <Jam 
+                key={upcomingJam.id} 
+                name={upcomingJam.title} 
+                url={upcomingJam.itchUrl}
+                imageUrl={upcomingJam.img}
+            />
         </div>
 
         <div>
