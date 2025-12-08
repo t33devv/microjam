@@ -23,21 +23,25 @@ function Navbar() {
             });
     }, []);
 
-    const handleLogin = () => {
-    window.location.href = 'http://localhost:3000/auth/discord';
-  };
+//     const handleLogin = () => {
+//     window.location.href = 'http://localhost:3000/auth/discord';
+//   };
 
-  const handleLogout = async () => {
-        try {
-            await fetch('http://localhost:3000/auth/logout', {
-                credentials: 'include'
-            });
-            setUser(null);
-            window.location.href = '/';
-        } catch (err) {
-            console.error('Logout failed:', err);
-        }
-    };
+//   const handleLogout = async () => {
+//         try {
+//             await fetch('http://localhost:3000/auth/logout', {
+//                 credentials: 'include'
+//             });
+//             setUser(null);
+//             window.location.href = '/';
+//         } catch (err) {
+//             console.error('Logout failed:', err);
+//         }
+//     };
+
+    const handleLogin = () => {
+
+    }
 
   return (
     <div className="grid grid-cols-custom-layout w-full gap-4">

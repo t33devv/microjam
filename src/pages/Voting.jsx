@@ -3,6 +3,7 @@ import React from 'react'
 function Voting() {
   return (
     <div>
+        <p className="text-white text-2xl font-bold mt-[6rem]">this page doesn't actually work yet :(</p>
         <p className="text-white text-2xl font-bold mt-[6rem]">📊 vote for the next jam prereq</p>
         <p className="text-nm text-base font-bold mt-[1rem]">Click one of the prerequisites below to vote for it. Don't worry if you misclick, you can change your vote by clicking a different one.</p>
         <section id="list" className="group mt-[1rem]">
