@@ -1,46 +1,50 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 
+import axios from "axios";
+
 function Navbar() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-     useEffect(() => {
-        // Check if user is authenticated
-        fetch('http://localhost:3000/auth/user', {
-            credentials: 'include'
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.authenticated) {
-                    setUser(data.user);
-                }
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error('Auth check failed:', err);
-                setLoading(false);
-            });
+    useEffect(() => {
+        getMe();
     }, []);
 
-//     const handleLogin = () => {
-//     window.location.href = 'http://localhost:3000/auth/discord';
-//   };
-
-//   const handleLogout = async () => {
-//         try {
-//             await fetch('http://localhost:3000/auth/logout', {
-//                 credentials: 'include'
-//             });
-//             setUser(null);
-//             window.location.href = '/';
-//         } catch (err) {
-//             console.error('Logout failed:', err);
-//         }
-//     };
-
     const handleLogin = () => {
+        window.location.href = 'http://localhost:4000/auth/discord/login';
+    }
 
+    const handleLogout = async (e) => {
+        e.preventDefault();
+        
+        try {
+            await axios.post('http://localhost:4000/auth/logout', {}, {
+                withCredentials: true
+            });
+            
+            setUser(null);
+            window.location.href = '/';
+        } catch (error) {
+            console.error('Logout failed:', error);
+            setUser(null);
+            window.location.href = '/';
+        }
+    };
+    
+    const getMe = async () => {
+        try {
+            const response = await axios.get('http://localhost:4000/user/me', {
+                withCredentials: true,
+            });
+            console.log('User:', response.data);
+            setUser(response.data);
+        } catch (error) {
+            console.error('Not logged in:', error);
+            setUser(null);
+        } finally {
+            setLoading(false);
+        }
     }
 
   return (
