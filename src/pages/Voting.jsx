@@ -22,7 +22,10 @@ function Voting() {
     const checkExistingVote = async () => {
         try {
             const response = await axios.get(`${API_URL}/votes/current`, {
-                withCredentials: true
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
             
             if (response.data.hasVoted) {
@@ -39,7 +42,12 @@ function Voting() {
         try {
             await axios.post(`${API_URL}/votes`, 
                 { theme },
-                { withCredentials: true }
+                { 
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
             );
             
             setSelectedTheme(theme);
