@@ -51,7 +51,7 @@ function Navbar() {
   return (
     <div className="flex flex-col md:grid md:grid-cols-custom-layout w-full gap-2 md:gap-4 px-4 md:px-0">
         <div className="flex justify-start items-center">
-            <p className="text-muted font-bold text-xl md:text-3xl">
+            <p className="text-muted font-bold text-3xl md:text-3xl">
                 // Micro Jam
             </p>
         </div>
