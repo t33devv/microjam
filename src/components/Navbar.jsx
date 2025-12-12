@@ -94,7 +94,7 @@ function Navbar() {
                     </span>
                 ) : (
                     <span className="text-primary underline">
-                        <a href="#" onClick={handleLogin}>login</a>
+                        <a href="#" onClick={handleLogin}>LOGIN</a>
                     </span>
                 )}
             </p>
