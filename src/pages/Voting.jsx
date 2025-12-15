@@ -4,11 +4,11 @@ import axios from 'axios';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
 const themes = [
-    "Death is not the end",
-    "Mouse input only",
-    "The friends along the way",
-    "One button, two functions",
-    "You start with nothing"
+    "Constantly overworked",
+    "Full of mystery",
+    "Choices matter",
+    "No repetition",
+    "Rules change mid-game"
 ];
 
 function Voting() {
