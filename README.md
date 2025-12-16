@@ -8,11 +8,12 @@ Micro Jam is a game development competition hosted on itch.io, aiming to become 
 
 ## Tech Stack
 
-- **React 19** - UI library
-- **Vite** - Build tool and dev server
-- **Tailwind CSS** - Styling
-- **React Router** - Client-side routing
-- **Axios** - HTTP client for API requests
+-   **React 19** - UI library
+-   **Vite** - Build tool and dev server
+-   **Tailwind CSS** - Styling
+-   **React Router** - Client-side routing
+-   **Axios** - HTTP client for API requests
+-   **Knex** - PostgreSQL database query builder (w/ Supabase)
 
 ## Authentication
 
