@@ -354,8 +354,15 @@ export const jams = [
   {
     id: 51,
     title: "Micro Jam 051: Christmas",
-    status: "upcoming",     // "upcoming", "active", "completed"
+    status: "completed",     // "upcoming", "active", "completed"
     itchUrl: "https://itch.io/jam/micro-jam-051",
     img: 'https://res.cloudinary.com/draopkta1/image/upload/v1765164708/34_v4uyga.png'
+  },
+  {
+    id: 52,
+    title: "Micro Jam 052: Wnter",
+    status: "upcoming",     // "upcoming", "active", "completed"
+    itchUrl: "https://itch.io/jam/micro-jam-052",
+    img: 'https://res.cloudinary.com/draopkta1/image/upload/v1765851435/Untitled_design_24_iexswx.png'
   },
 ]
