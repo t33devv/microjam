@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #1f1f1f; /*normal*/
+        --nm: #cccccc; /*background*/
+        --li: #6d7681; /*light*/
+        --ac: #6a9956; /*accent*/
+    }
+}
+
+body {
+    background-color: var(--bg);
+    font-family: monospace;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    max-width: 90ch;
+    padding-top: 4.5rem;
+    padding-bottom: 3rem;
+    margin: auto;
+}
