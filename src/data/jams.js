@@ -360,7 +360,7 @@ export const jams = [
   },
   {
     id: 52,
-    title: "Micro Jam 052: Wnter",
+    title: "Micro Jam 052: Winter",
     status: "upcoming",     // "upcoming", "active", "completed"
     itchUrl: "https://itch.io/jam/micro-jam-052",
     img: 'https://res.cloudinary.com/draopkta1/image/upload/v1765851435/Untitled_design_24_iexswx.png'
