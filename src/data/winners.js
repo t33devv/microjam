@@ -365,6 +365,110 @@ export const winners = [
         ]
         
     },
-    
+
+
+
+
+    {
+        place: "1",
+        category: "overall",
+        jam: "micro-jam-021",
+        gameName: "Cave Lord",
+        gameUrl: "https://nlteyo.itch.io/cave-lord",
+        contributors: [
+            {
+                discordId: "176099052792840192",
+                discordUrl: "https://discord.com/users/176099052792840192",
+            },
+        ],
+    },
+    {
+        place: "2",
+        category: "overall",
+        jam: "micro-jam-021",
+        gameName: "Underground",
+        gameUrl: "https://elias-espondaburu.itch.io/underground",
+        contributors: [
+            {
+                discordId: "416401555776995331",
+                discordUrl: "https://discord.com/users/416401555776995331",
+            },
+            
+        ],
+    },
+    {
+        place: "3",
+        category: "overall",
+        jam: "micro-jam-021",
+        gameName: "Ore Resolve",
+        gameUrl: "https://akwedukt.itch.io/ore-revolve",
+        contributors: [
+            {
+                discordId: "996843745397985291",
+                discordUrl: "https://discord.com/users/996843745397985291",
+            },
+            
+        ],
+    },
+    {
+        place: "1",
+        category: "miniscript",
+        jam: "micro-jam-021",
+        gameName: "Save your gold",
+        gameUrl: "https://iamst.itch.io/save-your-gold",
+        contributors: [
+            {
+                discordId: "",
+                discordUrl: "",
+            },
+        ],
+    },
+
+
+
+
+
+
+    {
+        place: "1",
+        category: "overall",
+        jam: "micro-jam-022",
+        gameName: "The Nile God",
+        gameUrl: "https://deandoesdev.itch.io/the-nile-god",
+        contributors: [
+            {
+                discordId: "782241518244462632",
+                discordUrl: "https://discord.com/users/782241518244462632",
+            },
+        ],
+    },
+    {
+        place: "2",
+        category: "overall",
+        jam: "micro-jam-022",
+        gameName: "Cardavan",
+        gameUrl: "https://nastyoldwizard.itch.io/cardavan",
+        contributors: [
+            {
+                discordId: "176028217440731136",
+                discordUrl: "https://discord.com/users/176028217440731136",
+            },
+        ],
+    },
+    {
+        place: "3",
+        category: "overall",
+        jam: "micro-jam-022",
+        gameName: "Oasis",
+        gameUrl: "https://seeone.itch.io/oasis",
+        contributors: [
+            {
+                discordId: "611423346252578828",
+                discordUrl: "https://discord.com/users/611423346252578828",
+            },
+        ],
+    },
+
 
 ]
+

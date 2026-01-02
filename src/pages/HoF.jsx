@@ -406,12 +406,13 @@ function HoF() {
           contributorIds.map(async (discordId) => {
             try {
               const { data } = await apiClient.get(`/discord/users/${discordId}`);
+              const resolvedId = data?.id ?? discordId;
               const avatarUrl = data?.avatar
-                ? `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png?size=128`
+                ? `https://cdn.discordapp.com/avatars/${resolvedId}/${data.avatar}.png?size=128`
                 : undefined;
 
               return {
-                id: data?.id ?? discordId,
+                id: resolvedId,
                 displayName: data?.global_name || data?.display_name || data?.username,
                 username: data?.username,
                 avatarUrl,
