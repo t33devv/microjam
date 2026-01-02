@@ -3,8 +3,6 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  server: {
-    allowedHosts: ["unreproductive-luanna-fallalishly.ngrok-free.dev"],
+  plugins: [react()]
   },
 })
