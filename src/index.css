@@ -2,13 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --bg: #1f1f1f; /*normal*/
-        --nm: #cccccc; /*background*/
-        --li: #6d7681; /*light*/
-        --ac: #6a9956; /*accent*/
-    }
+:root {
+    --bg: #1f1f1f; /*normal*/
+    --nm: #cccccc; /*background*/
+    --li: #6d7681; /*light*/
+    --ac: #6a9956; /*accent*/
 }
 
 body {
