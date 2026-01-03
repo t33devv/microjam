@@ -278,7 +278,6 @@ const Podium = ({ winners: podiumWinners, profiles }) => {
                   ))}
                 </div>
                 <div className="space-y-1">
-                  <p className="text-white text-xs uppercase tracking-[0.2em]">game</p>
                   <a
                     href={entry.gameUrl}
                     target="_blank"
