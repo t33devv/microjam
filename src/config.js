@@ -1,5 +1,6 @@
-const DEFAULT_API_URL = 'https://mj-server-juv9.onrender.com';
+  // const DEV_API_URL = 'http://localhost:4000';
+  // const PROD_API_URL = 'https://mj-server-juv9.onrender.com';
 
-const API_URL = import.meta.env.VITE_API_URL ?? DEFAULT_API_URL;
+const API_URL ='https://mj-server-juv9.onrender.com'
 
 export { API_URL };
