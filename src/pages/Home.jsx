@@ -1,17 +1,47 @@
-import { Link } from "react-router-dom"
-
-import { jams } from "../data/jams";
+import { useEffect, useMemo, useState } from "react";
+import apiClient from "../services/apiClient";
 
 import Jam from "../components/Jam";
 
 function Home() {
-    let upcomingJam = null;
-    for (const jam of jams) {
-        if (jam.status === "upcoming") {
-            upcomingJam = jam;
-            break;
-        }
-    }
+    const [jams, setJams] = useState([]);
+    const [loadingJams, setLoadingJams] = useState(true);
+    const [jamsError, setJamsError] = useState(null);
+
+    useEffect(() => {
+        let ignore = false;
+
+        const fetchJams = async () => {
+            try {
+                const { data } = await apiClient.get('/jams');
+                if (ignore) return;
+
+                const jamList = Array.isArray(data) ? data : [];
+                setJams(jamList);
+                setJamsError(null);
+            } catch (error) {
+                if (!ignore) {
+                    console.error('Failed to load jams', error);
+                    setJamsError('Failed to load the upcoming jam.');
+                }
+            } finally {
+                if (!ignore) {
+                    setLoadingJams(false);
+                }
+            }
+        };
+
+        fetchJams();
+
+        return () => {
+            ignore = true;
+        };
+    }, []);
+
+    const upcomingJam = useMemo(
+        () => jams.find((jam) => jam.status === "upcoming"),
+        [jams],
+    );
   return (
     <>
         <div className="px-4 md:px-0">
@@ -40,12 +70,20 @@ function Home() {
 
         <div className="px-4 md:px-0">
             <p className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[4rem]">⏳ upcoming jam</p>
-            <Jam 
-                key={upcomingJam.id} 
-                name={upcomingJam.title} 
-                url={upcomingJam.itchUrl}
-                imageUrl={upcomingJam.img}
-            />
+            {loadingJams ? (
+                <p className="text-li text-base font-bold mt-4">Loading upcoming jam...</p>
+            ) : jamsError ? (
+                <p className="text-primary text-base font-bold mt-4">{jamsError}</p>
+            ) : upcomingJam ? (
+                <Jam 
+                    key={upcomingJam.id} 
+                    name={upcomingJam.title} 
+                    url={upcomingJam.itchUrl}
+                    imageUrl={upcomingJam.img}
+                />
+            ) : (
+                <p className="text-li text-base font-bold mt-4">No upcoming jam has been announced yet. Check back soon!</p>
+            )}
         </div>
 
         <div className="mt-[3rem] md:mt-[5rem] px-4 md:px-0">

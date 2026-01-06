@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
-import { winners } from "../data/winners";
-import { jams } from "../data/jams";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import apiClient from "../services/apiClient";
+import useAdminStatus from "../hooks/useAdminStatus";
+import AdminJsonEditor from "../components/AdminJsonEditor";
 
-const buildJamLookup = () => {
+const buildJamLookup = (jams = []) => {
   return jams.reduce((acc, jam) => {
     if (!jam?.itchUrl) return acc;
     const slug = jam.itchUrl.split("/").pop();
@@ -14,7 +14,13 @@ const buildJamLookup = () => {
   }, {});
 };
 
-const jamLookup = buildJamLookup();
+const sanitizeWinnerForEditor = (winner = {}) => {
+  const { _index, ...rest } = winner;
+  return {
+    ...rest,
+    contributors: Array.isArray(rest?.contributors) ? rest.contributors : [],
+  };
+};
 
 const normalizeCategoryLabel = (category) => {
   if (!category) return "category";
@@ -128,7 +134,7 @@ const winnerContributors = (winner) => {
   return [];
 };
 
-const groupWinners = () => {
+const groupWinners = (winners = []) => {
   return winners.reduce((acc, winner) => {
     const jam = winner.jam ?? "unknown-jam";
     const category = winner.category ?? "uncategorized";
@@ -140,10 +146,6 @@ const groupWinners = () => {
     return acc;
   }, {});
 };
-
-const jamEntries = Object.entries(groupWinners()).sort((a, b) =>
-  a[0] < b[0] ? 1 : -1,
-);
 
 const podiumStyles = {
   1: {
@@ -216,7 +218,7 @@ const ContributorOrbit = ({ contributors, profiles }) => {
   );
 };
 
-const Podium = ({ winners: podiumWinners, profiles }) => {
+const Podium = ({ winners: podiumWinners, profiles, isAdmin, loadingAdmin, onEditWinner }) => {
   const orderedPlaces = [2, 1, 3];
   const heights = {
     1: "md:min-h-[15rem] min-h-[11rem]",
@@ -255,8 +257,18 @@ const Podium = ({ winners: podiumWinners, profiles }) => {
               className="flex-1 flex flex-col items-center"
             >
               <div
-                className={`w-full max-w-[150px] ${heights[place]} ${podiumStyles[place].bg} ${podiumStyles[place].border} rounded-t-lg flex flex-col items-center justify-between pb-3 pt-4 px-3 text-center`}
+                className={`relative w-full max-w-[150px] ${heights[place]} ${podiumStyles[place].bg} ${podiumStyles[place].border} rounded-t-lg flex flex-col items-center justify-between pb-3 pt-4 px-3 text-center`}
               >
+                {isAdmin && !loadingAdmin && (
+                  <button
+                    type="button"
+                    onClick={() => onEditWinner(entry)}
+                    className="absolute top-2 right-2 text-xs bg-black/70 text-white rounded-full px-2 py-1 border border-white/20 hover:border-primary/70"
+                    aria-label="Edit winner"
+                  >
+                    ✏️
+                  </button>
+                )}
                 <ContributorOrbit
                   contributors={winnerContributors(entry)}
                   profiles={profiles}
@@ -299,7 +311,7 @@ const Podium = ({ winners: podiumWinners, profiles }) => {
   );
 };
 
-const CategoryHighlights = ({ categories, profiles }) => {
+const CategoryHighlights = ({ categories, profiles, isAdmin, loadingAdmin, onEditWinner }) => {
   const highlights = Object.entries(categories)
     .filter(([category]) => category !== "overall")
     .flatMap(([category, entries]) =>
@@ -323,8 +335,18 @@ const CategoryHighlights = ({ categories, profiles }) => {
           return (
             <div
               key={`${category}-${entry.jam}-${entry.place}`}
-              className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2 text-sm"
+              className="relative flex flex-col md:flex-row md:items-center gap-1 md:gap-2 text-sm"
             >
+              {isAdmin && !loadingAdmin && (
+                <button
+                  type="button"
+                  onClick={() => onEditWinner(entry)}
+                  className="absolute top-0 right-0 text-xs bg-black/70 text-white rounded-full px-2 py-1 border border-white/20 hover:border-primary/70"
+                  aria-label="Edit winner"
+                >
+                  ✏️
+                </button>
+              )}
               <div className="flex items-center gap-2 flex-wrap text-white font-bold">
                 <span className="text-primary uppercase tracking-[0.25em] text-xs">
                   {normalizeCategoryLabel(category)}
@@ -366,21 +388,22 @@ const CategoryHighlights = ({ categories, profiles }) => {
 };
 
 function HoF() {
-  const contributorIds = useMemo(() => {
-    const ids = new Set();
-    winners.forEach((winner) => {
-      winnerContributors(winner).forEach((contributor) => {
-        const discordId = getContributorDiscordId(contributor);
-        if (discordId) {
-          ids.add(discordId);
-        }
-      });
-    });
-    return Array.from(ids);
-  }, []);
+  const [jamEntries, setJamEntries] = useState([]);
+  const [jamLookup, setJamLookup] = useState({});
+  const [hallOfFameLoading, setHallOfFameLoading] = useState(true);
+  const [hallOfFameError, setHallOfFameError] = useState(null);
 
   const [discordProfiles, setDiscordProfiles] = useState({});
   const [expandedJams, setExpandedJams] = useState(() => new Set());
+  const [contributors, setContributors] = useState([]);
+  const [winnerList, setWinnerList] = useState([]);
+  const [editingWinnerIndex, setEditingWinnerIndex] = useState(null);
+  const [isAddingWinner, setIsAddingWinner] = useState(false);
+  const [winnerEditorValue, setWinnerEditorValue] = useState("{}");
+  const [winnerEditorError, setWinnerEditorError] = useState(null);
+  const [savingWinner, setSavingWinner] = useState(false);
+  const [batchEditingJam, setBatchEditingJam] = useState(null);
+  const { isAdmin, loadingAdmin } = useAdminStatus();
 
   const toggleJam = (jamSlug) => {
     setExpandedJams((prev) => {
@@ -392,6 +415,191 @@ function HoF() {
       }
       return next;
     });
+  };
+
+  const fetchHallOfFameData = useCallback(async () => {
+    setHallOfFameLoading(true);
+    setHallOfFameError(null);
+
+    try {
+      const [winnersResponse, jamsResponse] = await Promise.all([
+        apiClient.get('/winners'),
+        apiClient.get('/jams')
+      ]);
+
+      const winnerListRaw = Array.isArray(winnersResponse.data) ? winnersResponse.data : [];
+      const jamList = Array.isArray(jamsResponse.data) ? jamsResponse.data : [];
+      const winnerListWithIndex = winnerListRaw.map((winner, index) => ({ ...winner, _index: index }));
+
+      const grouped = Object.entries(groupWinners(winnerListWithIndex)).sort((a, b) =>
+        a[0] < b[0] ? 1 : -1,
+      );
+
+      setJamEntries(grouped);
+      setJamLookup(buildJamLookup(jamList));
+      setWinnerList(winnerListWithIndex);
+
+      const ids = new Set();
+      winnerListWithIndex.forEach((winner) => {
+        winnerContributors(winner).forEach((contributor) => {
+          const discordId = getContributorDiscordId(contributor);
+          if (discordId) {
+            ids.add(discordId);
+          }
+        });
+      });
+      setContributors(Array.from(ids));
+    } catch (error) {
+      console.error('Failed to load hall of fame data', error);
+      setHallOfFameError('Failed to load hall of fame data. Please try again later.');
+    } finally {
+      setHallOfFameLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchHallOfFameData();
+  }, [fetchHallOfFameData]);
+
+  const contributorIds = useMemo(() => contributors, [contributors]);
+
+  const resetWinnerEditor = () => {
+    setEditingWinnerIndex(null);
+    setIsAddingWinner(false);
+    setWinnerEditorError(null);
+    setSavingWinner(false);
+    setBatchEditingJam(null);
+  };
+
+  const openWinnerEditor = (winner) => {
+    if (!winner?._index && winner?._index !== 0) return;
+    setWinnerEditorError(null);
+    setSavingWinner(false);
+    setIsAddingWinner(false);
+    setEditingWinnerIndex(winner._index);
+    setWinnerEditorValue(JSON.stringify(winner, null, 2));
+    setBatchEditingJam(null);
+  };
+
+  const openAddWinner = () => {
+    setWinnerEditorError(null);
+    setSavingWinner(false);
+    setEditingWinnerIndex(null);
+    setIsAddingWinner(true);
+    setWinnerEditorValue(JSON.stringify({
+      place: "1",
+      category: "overall",
+      jam: "",
+      gameName: "",
+      gameUrl: "",
+      contributors: []
+    }, null, 2));
+    setBatchEditingJam(null);
+  };
+
+  const openAddWinnerForJam = (jamSlug) => {
+    setWinnerEditorError(null);
+    setSavingWinner(false);
+    setEditingWinnerIndex(null);
+    setIsAddingWinner(true);
+    setBatchEditingJam(jamSlug);
+    const jamWinners = winnerList.filter((winner) => winner.jam === jamSlug);
+    const value = jamWinners.length ? jamWinners.map((winner) => sanitizeWinnerForEditor(winner)) : [{
+      place: "1",
+      category: "overall",
+      jam: jamSlug,
+      gameName: "",
+      gameUrl: "",
+      contributors: []
+    }];
+    setWinnerEditorValue(JSON.stringify(value, null, 2));
+  };
+
+  const saveBatchWinners = async (entries) => {
+    if (!batchEditingJam) {
+      throw new Error('No jam selected for batch editing.');
+    }
+
+    if (!Array.isArray(entries)) {
+      throw new Error('Batch edit requires an array of winners.');
+    }
+
+    const normalizedEntries = entries.map((entry, idx) => {
+      if (!entry || typeof entry !== 'object') {
+        throw new Error(`Entry ${idx + 1}: Each winner must be an object.`);
+      }
+
+      const payload = {
+        place: entry.place,
+        category: entry.category,
+        jam: entry.jam || batchEditingJam,
+        gameName: entry.gameName,
+        gameUrl: entry.gameUrl,
+        contributors: Array.isArray(entry.contributors) ? entry.contributors : [],
+      };
+
+      const requiredFields = ['place', 'category', 'jam', 'gameName', 'gameUrl'];
+      const missing = requiredFields.find((field) => {
+        const value = payload[field];
+        return value === undefined || value === null || String(value).trim() === '';
+      });
+
+      if (missing) {
+        throw new Error(`Entry ${idx + 1}: Field "${missing}" is required.`);
+      }
+
+      return {
+        place: String(payload.place).trim(),
+        category: payload.category.trim(),
+        jam: payload.jam.trim(),
+        gameName: payload.gameName.trim(),
+        gameUrl: payload.gameUrl.trim(),
+        contributors: payload.contributors,
+      };
+    });
+
+    await apiClient.put(`/admin/winners/jam/${batchEditingJam}`, normalizedEntries);
+  };
+
+  const handleSaveWinner = async () => {
+    try {
+      setWinnerEditorError(null);
+      setSavingWinner(true);
+      const parsed = JSON.parse(winnerEditorValue);
+      if (Array.isArray(parsed)) {
+        await saveBatchWinners(parsed);
+      } else {
+        const payload = { ...parsed };
+        delete payload._index;
+
+        if (isAddingWinner && batchEditingJam) {
+          payload.jam = payload.jam || batchEditingJam;
+        }
+
+        if (isAddingWinner && batchEditingJam) {
+          await apiClient.put(`/admin/winners/jam/${payload.jam}`, [payload]);
+        } else if (isAddingWinner && !batchEditingJam) {
+          await apiClient.post('/admin/winners', payload);
+        } else {
+          await apiClient.put(`/admin/winners/${editingWinnerIndex}`, payload);
+        }
+      }
+
+      resetWinnerEditor();
+      setHallOfFameLoading(true);
+      await fetchHallOfFameData();
+      if (typeof window !== "undefined") {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Failed to save winner', error);
+      if (error instanceof SyntaxError) {
+        setWinnerEditorError('Invalid JSON. Please fix and try again.');
+      } else {
+        setWinnerEditorError(error?.response?.data?.error || 'Failed to save winner.');
+      }
+      setSavingWinner(false);
+    }
   };
 
   useEffect(() => {
@@ -447,6 +655,28 @@ function HoF() {
     };
   }, [contributorIds]);
 
+  if (hallOfFameLoading) {
+    return (
+      <div className="px-4 md:px-0 mt-[6rem]">
+        <p className="text-white text-2xl font-bold">Jam winners</p>
+        <p className="text-li text-base font-bold mt-2">
+          Loading hall of fame data...
+        </p>
+      </div>
+    );
+  }
+
+  if (hallOfFameError) {
+    return (
+      <div className="px-4 md:px-0 mt-[6rem]">
+        <p className="text-white text-2xl font-bold">Jam winners</p>
+        <p className="text-primary text-base font-bold mt-2">
+          {hallOfFameError}
+        </p>
+      </div>
+    );
+  }
+
   if (!jamEntries.length) {
     return (
       <div className="px-4 md:px-0 mt-[6rem]">
@@ -469,7 +699,34 @@ function HoF() {
           overall winners show up on the podium, while other categories list
           their finalists below.
         </p>
+        {isAdmin && !loadingAdmin && (
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={openAddWinner}
+              className="inline-flex items-center gap-2 px-4 py-2 border border-li/40 text-white font-bold rounded-full hover:border-primary/60"
+            >
+              <span className="text-lg">+</span>
+              <span>Add winner</span>
+            </button>
+          </div>
+        )}
       </div>
+
+      {isAdmin && !loadingAdmin && (isAddingWinner || editingWinnerIndex !== null) && (
+        <div className="mt-6">
+          <AdminJsonEditor
+            title={isAddingWinner ? "Add winner" : "Edit winner"}
+            description="Update the winner JSON snippet and save."
+            value={winnerEditorValue}
+            onChange={setWinnerEditorValue}
+            onSave={handleSaveWinner}
+            onCancel={resetWinnerEditor}
+            saving={savingWinner}
+            error={winnerEditorError}
+          />
+        </div>
+      )}
 
       <div className="mt-10 space-y-10">
         {jamEntries.map(([jamSlug, categories]) => {
@@ -505,7 +762,7 @@ function HoF() {
                     </p>
                   )}
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
                   <a
                     href={jamUrl}
                     target="_blank"
@@ -514,6 +771,16 @@ function HoF() {
                   >
                     view jam page ↗
                   </a>
+                  {isAdmin && !loadingAdmin && (
+                    <button
+                      type="button"
+                      onClick={() => openAddWinnerForJam(jamSlug)}
+                      className="text-xs bg-black/70 text-white rounded-full px-2 py-1 border border-white/20 hover:border-primary/70"
+                      aria-label="Add winner for jam"
+                    >
+                      ✏️
+                    </button>
+                  )}
                   <button
                     type="button"
                     onClick={() => toggleJam(jamSlug)}
