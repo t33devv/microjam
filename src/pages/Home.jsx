@@ -45,7 +45,7 @@ function Home() {
   return (
     <>
         <div className="px-4 md:px-0">
-            <p className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[6rem]">👋 hello, welcome to this page!</p>
+            <h1 className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[6rem]">👋 hello, welcome to Micro Jam: a 48-hour Game Jam!</h1>
             <p className="text-nm text-sm md:text-base font-bold mt-[1rem]">Micro Jam is a 48-hour Game Jam (game dev competition) that runs once every 2 weeks. We host our Jams on itch.io, and we're trying to become the world's largest weekend Jam.</p>
             <p className="text-nm text-sm md:text-base font-bold mt-[1rem]">We offer $200+ worth of prizes every event, thanks to our sponsors <span className="italic underline">GameMaker</span> and <span className="italic underline">Bezi</span>, as well as <span className="italic underline">MiniScript</span>! Since our creation in December of 2023 by Tommy (Tobias) Zhou, our generous sponsors helped us grow to a community of 3,500+ members.</p>
 
@@ -69,7 +69,7 @@ function Home() {
         </div>
 
         <div className="px-4 md:px-0">
-            <p className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[4rem]">⏳ upcoming jam</p>
+            <h2 className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[4rem]">⏳ upcoming micro jam</h2>
             {loadingJams ? (
                 <p className="text-li text-base font-bold mt-4">Loading upcoming jam...</p>
             ) : jamsError ? (
@@ -87,7 +87,7 @@ function Home() {
         </div>
 
         <div className="mt-[3rem] md:mt-[5rem] px-4 md:px-0">
-            <p className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[4rem]">🤝 our beloved partners</p>
+            <h2 className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[4rem]">🤝 our beloved partners</h2>
             <div className="text-base md:text-lg font-bold">
                 <section id="list" className="group mt-[1rem]">
                     <div className="flex flex-col justify-between border-l-4 border-li p-4 md:p-5 transition-all duration-300 group-hover:opacity-30 group-hover:border-bg group-hover:hover:opacity-100 group-hover:hover:border-l-[24px] group-hover:hover:border-primary">
