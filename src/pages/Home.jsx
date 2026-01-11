@@ -45,6 +45,7 @@ function Home() {
   return (
     <>
         <title>48-hour Biweekly Game Jam with Prizes | Micro Jam</title>
+        <meta name="description" content="Micro Jam is a 48-hour Game Jam that runs once every 2 weeks. Join 3,500+ members and compete for $200+ in prizes!" />
         <div className="px-4 md:px-0">
             <h1 className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[6rem]">👋 hello, welcome to Micro Jam: a 48-hour Game Jam!</h1>
             <p className="text-nm text-sm md:text-base font-bold mt-[1rem]">Micro Jam is a 48-hour Game Jam (game dev competition) that runs once every 2 weeks. We host our Jams on itch.io, and we're trying to become the world's largest weekend Jam.</p>

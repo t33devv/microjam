@@ -48,6 +48,7 @@ function Voting() {
     return (
         <>
             <title>Game Jam Prerequisite Voting | Micro Jam</title>
+            <meta name="description" content="Select a prerequisite for the next Micro Jam! The game developers community is shaping the competition." />
             <div className="px-4 md:px-0">
                 <p className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[6rem]">📊 vote for the next jam prereq</p>
                 <p className="text-nm text-sm md:text-base font-bold mt-[1rem]">

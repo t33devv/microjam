@@ -114,6 +114,7 @@ function Jams() {
     return (
         <>
             <title>Game jams archive | Micro Jam</title>
+            <meta name="description" content="Explore past Micro Jam competitions. View results, winning games, previous themes, and join the upcoming biweekly game development challenge!" />
             <div className="px-4 md:px-0">
                 <p className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[6rem]">📜 our (long) history of jams:</p>
             </div>

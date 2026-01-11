@@ -692,6 +692,7 @@ function HoF() {
   return (
     <>
       <title>Hall of Fame, Game Jam Winners | Micro Jam</title>
+      <meta name="description" content="View every winner of previous Micro Jams. You can have a place there as well, joining to bi-weekly game jam competition!" />
       <div className="px-4 md:px-0 mt-[4rem] md:mt-[6rem]">
         <div>
           <p className="text-white text-2xl md:text-3xl font-bold">
