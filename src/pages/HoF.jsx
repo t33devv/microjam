@@ -227,6 +227,7 @@ const Podium = ({ winners: podiumWinners, profiles, isAdmin, loadingAdmin, onEdi
   };
 
   return (
+    
     <div className="mt-4">
       <div className="flex items-end justify-center gap-3 md:gap-6">
         {orderedPlaces.map((place) => {
@@ -689,119 +690,123 @@ function HoF() {
   }
 
   return (
-    <div className="px-4 md:px-0 mt-[4rem] md:mt-[6rem]">
-      <div>
-        <p className="text-white text-2xl md:text-3xl font-bold">
-          🏆 jam winners
-        </p>
-        <p className="text-nm text-sm md:text-base font-bold mt-3 max-w-3xl">
-          grouped by jam & category so you can quickly spot the best builds.
-          overall winners show up on the podium, while other categories list
-          their finalists below.
-        </p>
-        {isAdmin && !loadingAdmin && (
-          <div className="mt-4">
-            <button
-              type="button"
-              onClick={openAddWinner}
-              className="inline-flex items-center gap-2 px-4 py-2 border border-li/40 text-white font-bold rounded-full hover:border-primary/60"
-            >
-              <span className="text-lg">+</span>
-              <span>Add winner</span>
-            </button>
+    <>
+      <title>Hall of Fame, Game Jam Winners | Micro Jam</title>
+      <div className="px-4 md:px-0 mt-[4rem] md:mt-[6rem]">
+        <div>
+          <p className="text-white text-2xl md:text-3xl font-bold">
+            🏆 jam winners
+          </p>
+          <p className="text-nm text-sm md:text-base font-bold mt-3 max-w-3xl">
+            grouped by jam & category so you can quickly spot the best builds.
+            overall winners show up on the podium, while other categories list
+            their finalists below.
+          </p>
+          {isAdmin && !loadingAdmin && (
+            <div className="mt-4">
+              <button
+                type="button"
+                onClick={openAddWinner}
+                className="inline-flex items-center gap-2 px-4 py-2 border border-li/40 text-white font-bold rounded-full hover:border-primary/60"
+              >
+                <span className="text-lg">+</span>
+                <span>Add winner</span>
+              </button>
+            </div>
+          )}
+        </div>
+
+        {isAdmin && !loadingAdmin && (isAddingWinner || editingWinnerIndex !== null) && (
+          <div className="mt-6">
+            <AdminJsonEditor
+              title={isAddingWinner ? "Add winner" : "Edit winner"}
+              description="Update the winner JSON snippet and save."
+              value={winnerEditorValue}
+              onChange={setWinnerEditorValue}
+              onSave={handleSaveWinner}
+              onCancel={resetWinnerEditor}
+              saving={savingWinner}
+              error={winnerEditorError}
+            />
           </div>
         )}
-      </div>
 
-      {isAdmin && !loadingAdmin && (isAddingWinner || editingWinnerIndex !== null) && (
-        <div className="mt-6">
-          <AdminJsonEditor
-            title={isAddingWinner ? "Add winner" : "Edit winner"}
-            description="Update the winner JSON snippet and save."
-            value={winnerEditorValue}
-            onChange={setWinnerEditorValue}
-            onSave={handleSaveWinner}
-            onCancel={resetWinnerEditor}
-            saving={savingWinner}
-            error={winnerEditorError}
-          />
-        </div>
-      )}
+        <div className="mt-10 space-y-10">
+          {jamEntries.map(([jamSlug, categories]) => {
+            const jamMeta = jamLookup[jamSlug];
+            const jamTitle = jamMeta?.title ?? jamSlug.replace(/-/g, " ");
+            const jamUrl = jamMeta?.itchUrl ?? `https://itch.io/jam/${jamSlug}`;
+            const categoryEntries = Object.entries(categories).sort((a, b) => {
+              if (a[0] === "overall") return -1;
+              if (b[0] === "overall") return 1;
+              return a[0].localeCompare(b[0]);
+            });
+            const isExpanded = expandedJams.has(jamSlug);
+            const [jamTitlePrimary, jamTitleSecondary] = jamTitle
+              .split(":")
+              .map((part) => part.trim());
 
-      <div className="mt-10 space-y-10">
-        {jamEntries.map(([jamSlug, categories]) => {
-          const jamMeta = jamLookup[jamSlug];
-          const jamTitle = jamMeta?.title ?? jamSlug.replace(/-/g, " ");
-          const jamUrl = jamMeta?.itchUrl ?? `https://itch.io/jam/${jamSlug}`;
-          const categoryEntries = Object.entries(categories).sort((a, b) => {
-            if (a[0] === "overall") return -1;
-            if (b[0] === "overall") return 1;
-            return a[0].localeCompare(b[0]);
-          });
-          const isExpanded = expandedJams.has(jamSlug);
-          const [jamTitlePrimary, jamTitleSecondary] = jamTitle
-            .split(":")
-            .map((part) => part.trim());
-
-          return (
-            <section
-              key={jamSlug}
-              className="border border-li/30 bg-black/30 rounded-2xl p-5 md:p-8 shadow-[0_0_25px_rgba(0,0,0,0.25)]"
-            >
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                <div>
-                  <p className="text-muted text-xs uppercase tracking-[0.4em]">
-                    {jamSlug}
-                  </p>
-                  <p className="text-white text-xl md:text-2xl font-bold">
-                    {jamTitlePrimary}
-                  </p>
-                  {jamTitleSecondary && (
-                    <p className="text-primary text-lg md:text-xl font-bold">
-                      {jamTitleSecondary}
+            return (
+              <section
+                key={jamSlug}
+                className="border border-li/30 bg-black/30 rounded-2xl p-5 md:p-8 shadow-[0_0_25px_rgba(0,0,0,0.25)]"
+              >
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                  <div>
+                    <p className="text-muted text-xs uppercase tracking-[0.4em]">
+                      {jamSlug}
                     </p>
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  <a
-                    href={jamUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-primary underline text-sm md:text-base font-bold"
-                  >
-                    view jam page ↗
-                  </a>
-                  {isAdmin && !loadingAdmin && (
+                    <p className="text-white text-xl md:text-2xl font-bold">
+                      {jamTitlePrimary}
+                    </p>
+                    {jamTitleSecondary && (
+                      <p className="text-primary text-lg md:text-xl font-bold">
+                        {jamTitleSecondary}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={jamUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-primary underline text-sm md:text-base font-bold"
+                    >
+                      view jam page ↗
+                    </a>
+                    {isAdmin && !loadingAdmin && (
+                      <button
+                        type="button"
+                        onClick={() => openAddWinnerForJam(jamSlug)}
+                        className="text-xs bg-black/70 text-white rounded-full px-2 py-1 border border-white/20 hover:border-primary/70"
+                        aria-label="Add winner for jam"
+                      >
+                        ✏️
+                      </button>
+                    )}
                     <button
                       type="button"
-                      onClick={() => openAddWinnerForJam(jamSlug)}
-                      className="text-xs bg-black/70 text-white rounded-full px-2 py-1 border border-white/20 hover:border-primary/70"
-                      aria-label="Add winner for jam"
+                      onClick={() => toggleJam(jamSlug)}
+                      className="text-white font-bold text-sm border border-li/40 rounded-full px-3 py-1"
                     >
-                      ✏️
+                      {isExpanded ? "hide" : "show"}
                     </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => toggleJam(jamSlug)}
-                    className="text-white font-bold text-sm border border-li/40 rounded-full px-3 py-1"
-                  >
-                    {isExpanded ? "hide" : "show"}
-                  </button>
+                  </div>
                 </div>
-              </div>
 
-              <div
-                className={`transition-[max-height] duration-500 ease-in-out overflow-hidden ${isExpanded ? "max-h-[2000px] mt-6" : "max-h-0"}`}
-              >
-                <Podium winners={categories.overall ?? []} profiles={discordProfiles} />
-                <CategoryHighlights categories={categories} profiles={discordProfiles} />
-              </div>
-            </section>
-          );
-        })}
+                <div
+                  className={`transition-[max-height] duration-500 ease-in-out overflow-hidden ${isExpanded ? "max-h-[2000px] mt-6" : "max-h-0"}`}
+                >
+                  <Podium winners={categories.overall ?? []} profiles={discordProfiles} />
+                  <CategoryHighlights categories={categories} profiles={discordProfiles} />
+                </div>
+              </section>
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </>
+    
   );
 }
 
