@@ -132,7 +132,7 @@ function Navbar() {
                     // Micro Jam
                 </p>
             </div>
-            <div className="flex flex-wrap justify-start md:justify-end items-center gap-1 md:gap-0">
+            <nav className="flex flex-wrap justify-start md:justify-end items-center gap-1 md:gap-0">
                 <p className="flex flex-wrap justify-start md:justify-center items-center font-bold text-sm md:text-base">
                     <span className="text-primary underline">
                         <Link to="/">home</Link>
@@ -245,7 +245,7 @@ function Navbar() {
                         </span>
                     )}
                 </p>
-            </div>
+            </nav>
         </div>
     </header>
     
