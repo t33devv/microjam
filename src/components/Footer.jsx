@@ -20,7 +20,7 @@ function Footer() {
         <p className="leading-6 text-sm md:text-base font-bold text-nm">
           made by <a href="https://github.com/t33devv " target="_blank"  className="text-ac underline hover:no-underline hover:bg-ac hover:text-bg">tobias zhou</a><br />
           made for <button onClick={scrollToTop} className="text-ac underline hover:no-underline hover:bg-ac hover:text-bg cursor-pointer">micro jam</button><br />
-          v1.0.3<br />
+          v1.2.3<br />
           © 2026<br />
           
           <br /><br />
