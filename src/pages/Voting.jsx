@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react';
 import apiClient from '../services/apiClient';
 
 const themes = [
-    "Keyboard input only",
-    "Constant randomness",
-    "Rules change mid-game",
-    "Beyond human limitations",
-    "In a horde"
+    "No living things",
+    "Random controls",
+    "Written in an alien language",
+    "Constant duality",
+    "No way backwards"
 ];
 
 function Voting() {
