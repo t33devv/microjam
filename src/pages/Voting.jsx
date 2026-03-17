@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react';
 import apiClient from '../services/apiClient';
 
 const themes = [
-    "No living things",
-    "Random controls",
-    "Written in an alien language",
-    "Constant duality",
-    "No way backwards"
+    "Always fear something",
+    "One mechanic only",
+    "Silence is key",
+    "Dread, not danger",
+    "Unseen threats"
 ];
 
 function Voting() {
