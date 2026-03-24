@@ -3,11 +3,12 @@ import { useState, useEffect } from 'react';
 import apiClient from '../services/apiClient';
 
 const themes = [
-    "Always fear something",
-    "One mechanic only",
-    "Silence is key",
-    "Dread, not danger",
-    "Unseen threats"
+    "Light is deadly",
+    "Darkness heals you",
+    "Light as currency",
+    "Blind main character",
+    "Light attracts enemies",
+    "One light source"
 ];
 
 function Voting() {
