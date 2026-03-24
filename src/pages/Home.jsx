@@ -101,8 +101,8 @@ function Home() {
                         <span className="text-li font-bold before:content-['//_']">a smart AI unity assistant for dev</span>
                     </div>
                     <div className="flex flex-col justify-between border-l-4 border-li p-4 md:p-5 transition-all duration-300 group-hover:opacity-30 group-hover:border-bg group-hover:hover:opacity-100 group-hover:hover:border-l-[24px] group-hover:hover:border-primary">
-                        <a target="_blank" href="https://miniscript.org/" className="text-primary text-lg md:text-xl underline">MiniScript</a>
-                        <span className="text-li font-bold before:content-['//_']">easy scripting language to create games</span>
+                        <a target="_blank" href="https://miniscript.org/" className="text-primary text-lg md:text-xl underline">Ziva</a>
+                        <span className="text-li font-bold before:content-['//_']">top tier dev godot AI assistant</span>
                     </div>
                 </section>
             </div>
