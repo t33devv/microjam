@@ -3,12 +3,11 @@ import { useState, useEffect } from 'react';
 import apiClient from '../services/apiClient';
 
 const themes = [
-    "Light is deadly",
-    "Darkness heals you",
-    "Light as currency",
-    "Blind main character",
-    "Light attracts enemies",
-    "One light source"
+    "Mirrored mechanics",
+    "Two sides equal",
+    "Reflection wins",
+    "Breaking the balance",
+    "Keyboard input only"
 ];
 
 function Voting() {
