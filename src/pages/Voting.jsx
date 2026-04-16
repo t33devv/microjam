@@ -11,6 +11,7 @@ const themes = [
 ];
 
 function Voting() {
+    const [votingError, setVotingError] = useState(null);
     const [selectedTheme, setSelectedTheme] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -39,7 +40,7 @@ function Voting() {
             setSelectedTheme(theme);
         } catch (error) {
             console.error('Error submitting vote:', error);
-            alert('Please log in to vote!');
+            setVotingError('Please log in to vote!');
         }
     };
 
@@ -54,7 +55,9 @@ function Voting() {
                 <p className="text-nm text-sm md:text-base font-bold mt-[1rem]">
                     Click one of the prerequisites below to vote for it. Don't worry if you misclick, you can change your vote by clicking a different one.
                 </p>
-                
+
+                <b className="text-primary text-base md:text-lg font-bold mt-[2rem]">{votingError}</b>
+
                 {selectedTheme && (
                     <p className="text-primary text-base md:text-lg font-bold mt-[2rem]">
                         ✅ <span className="text-white">You voted for: </span>*{selectedTheme}*
