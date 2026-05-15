@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react';
 import apiClient from '../services/apiClient';
 
 const themes = [
-    "Mirrored mechanics",
-    "Two sides equal",
-    "Reflection wins",
-    "Breaking the balance",
-    "Keyboard input only"
+    "World is constantly changing",
+    "Only one direction at a time",
+    "Resources rise and fall",
+    "Volatile control",
+    "Strength is inversely proportional to progress"
 ];
 
 function Voting() {
