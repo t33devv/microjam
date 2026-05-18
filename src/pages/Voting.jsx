@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react';
 import apiClient from '../services/apiClient';
 
 const themes = [
-    "World is constantly changing",
-    "Only one direction at a time",
-    "Resources rise and fall",
-    "Volatile control",
-    "Strength is inversely proportional to progress"
+    "Predator and Prey",
+    "No HUD",
+    "Day/night cycle",
+    "Death is your friend",
+    "Slow motion moments"
 ];
 
 function Voting() {
