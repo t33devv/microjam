@@ -147,7 +147,7 @@ function Navbar() {
                         /
                     </span>
                     <span className="text-primary underline">
-                        <Link to="/hof">hoFame</Link>
+                        <Link to="/hoc">creators</Link>
                     </span>
                     <span className="text-muted mx-1 md:mx-[0.5rem]">
                         /
