@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react';
 import apiClient from '../services/apiClient';
 
 const themes = [
-    "Predator and Prey",
+    "Pixel Art Only",
     "No HUD",
-    "Day/night cycle",
-    "Death is your friend",
-    "Slow motion moments"
+    "Three Buttons Only",
+    "Limited Controls",
+    "Boss Fight"
 ];
 
 function Voting() {
