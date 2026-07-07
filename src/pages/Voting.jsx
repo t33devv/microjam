@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react';
 import apiClient from '../services/apiClient';
 
 const themes = [
-    "Pixel Art Only",
-    "No HUD",
-    "Three Buttons Only",
-    "Limited Controls",
-    "Boss Fight"
+    "Random generation",
+    "No boats allowed",
+    "Rising tide",
+    "You start with nothing",
+    "Shrinking map"
 ];
 
 function Voting() {
