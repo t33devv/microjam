@@ -58,34 +58,35 @@ function Home() {
                         join our discord server
                     </a>
                 </p>
-                <iframe 
-                    className="mt-[2rem] w-full max-w-[350px]" 
-                    src="https://discord.com/widget?id=1190868995226730616&theme=dark" 
-                    width="350" 
-                    height="500" 
-                    allowtransparency="true" 
-                    frameBorder="0" 
-                    sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
-                ></iframe>
+                <div className="mt-[2rem] flex flex-col md:flex-row gap-8 items-start">
+                    <iframe
+                        className="w-full max-w-[350px] shrink-0"
+                        src="https://discord.com/widget?id=1190868995226730616&theme=dark"
+                        width="350"
+                        height="500"
+                        allowtransparency="true"
+                        frameBorder="0"
+                        sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+                    ></iframe>
+                    <div>
+                        <h2 className="text-white text-xl md:text-2xl font-bold">⏳ upcoming micro jam</h2>
+                        {loadingJams ? (
+                            <p className="text-li text-base font-bold mt-4">Loading upcoming jam...</p>
+                        ) : jamsError ? (
+                            <p className="text-primary text-base font-bold mt-4">{jamsError}</p>
+                        ) : upcomingJam ? (
+                            <Jam
+                                key={upcomingJam.id}
+                                name={upcomingJam.title}
+                                url={upcomingJam.itchUrl}
+                                imageUrl={upcomingJam.img}
+                            />
+                        ) : (
+                            <p className="text-li text-base font-bold mt-4">No upcoming jam has been announced yet. Check back soon!</p>
+                        )}
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div className="px-4 md:px-0">
-            <h2 className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[4rem]">⏳ upcoming micro jam</h2>
-            {loadingJams ? (
-                <p className="text-li text-base font-bold mt-4">Loading upcoming jam...</p>
-            ) : jamsError ? (
-                <p className="text-primary text-base font-bold mt-4">{jamsError}</p>
-            ) : upcomingJam ? (
-                <Jam 
-                    key={upcomingJam.id} 
-                    name={upcomingJam.title} 
-                    url={upcomingJam.itchUrl}
-                    imageUrl={upcomingJam.img}
-                />
-            ) : (
-                <p className="text-li text-base font-bold mt-4">No upcoming jam has been announced yet. Check back soon!</p>
-            )}
         </div>
 
         <div className="mt-[3rem] md:mt-[5rem] px-4 md:px-0">
