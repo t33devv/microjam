@@ -1,10 +1,5 @@
 const creators = [
   {
-    name: 'DatOneDev',
-    url: 'https://www.youtube.com/@DatonedevYT',
-    pfp: '',
-  },
-  {
     name: 'LandonDevlops',
     url: 'https://www.youtube.com/@LandonDevelops',
     pfp: '',
