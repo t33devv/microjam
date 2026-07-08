@@ -1,3 +1,33 @@
+const creators = [
+  {
+    name: 'DatOneDev',
+    url: 'https://www.youtube.com/@DatonedevYT',
+    pfp: '',
+  },
+  {
+    name: 'LandonDevlops',
+    url: 'https://www.youtube.com/@LandonDevelops',
+    pfp: '',
+  },
+];
+
+function Creator({ name, url, pfp }) {
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noreferrer"
+      className="inline-block transition-transform duration-300 hover:-translate-y-4"
+      style={{ width: 'fit-content' }}
+    >
+      <div className="bg-white pb-[0.6rem] mt-[2rem] flex flex-col items-center">
+        <img src={pfp} alt={name} width={280} height={280} className="object-cover aspect-square" />
+        <p className="mt-[0.5rem] text-bg text-base font-bold">{name}</p>
+      </div>
+    </a>
+  );
+}
+
 function HoC() {
   return (
     <main className="px-4 md:px-0">
@@ -9,32 +39,13 @@ function HoC() {
         we're partnering with creators, inviting them to join a jam and log their experience on their channel.
       </p>
 
-      <section className="group mt-[2rem] md:mt-[3rem]">
-        <div className="flex flex-col justify-between border-l-4 border-li p-4 md:p-5 transition-all duration-300 group-hover:opacity-30 group-hover:border-bg group-hover:hover:opacity-100 group-hover:hover:border-l-[24px] group-hover:hover:border-primary">
-          <a
-            target="_blank"
-            rel="noreferrer"
-            href="https://www.youtube.com/@DatonedevYT"
-            className="text-primary text-lg md:text-xl underline font-bold"
-          >
-            DatOneDev
-          </a>
-          <span className="text-li text-sm md:text-base font-bold before:content-['//_']">youtube devlog creator</span>
-        </div>
-        <div className="flex flex-col justify-between border-l-4 border-li p-4 md:p-5 transition-all duration-300 group-hover:opacity-30 group-hover:border-bg group-hover:hover:opacity-100 group-hover:hover:border-l-[24px] group-hover:hover:border-primary">
-          <a
-            target="_blank"
-            rel="noreferrer"
-            href="https://www.youtube.com/@LandonDevelops"
-            className="text-primary text-lg md:text-xl underline font-bold"
-          >
-            LandonDevlops
-          </a>
-          <span className="text-li text-sm md:text-base font-bold before:content-['//_']">youtube devlog creator</span>
-        </div>
-      </section>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 mt-[2rem] md:mt-[3rem]">
+        {creators.map((creator) => (
+          <Creator key={creator.name} {...creator} />
+        ))}
+      </div>
     </main>
-  )
+  );
 }
 
 export default HoC
