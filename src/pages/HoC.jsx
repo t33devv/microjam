@@ -2,7 +2,7 @@ const creators = [
   {
     name: 'LandonDevlops',
     url: 'https://www.youtube.com/@LandonDevelops',
-    pfp: '',
+    pfp: 'https://res.cloudinary.com/draopkta1/image/upload/v1783829780/VideoGameProfilePicture_tjqcv9.png',
   },
 ];
 
