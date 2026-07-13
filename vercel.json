@@ -1,6 +1,10 @@
 {
   "routes": [
     {
+      "src": "/late/061",
+      "dest": "/late/061.pdf"
+    },
+    {
       "handle": "filesystem"
     },
     {
