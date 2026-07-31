@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react';
 import apiClient from '../services/apiClient';
 
 const themes = [
-    "Random generation",
-    "No boats allowed",
-    "Rising tide",
-    "You start with nothing",
-    "Shrinking map"
+    "Gradual speed increase",
+    "60 second max",
+    "Race against yourself",
+    "No going back",
+    "Speed is your weapon"
 ];
 
 function Voting() {
