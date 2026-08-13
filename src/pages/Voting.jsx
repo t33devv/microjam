@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react';
 import apiClient from '../services/apiClient';
 
 const themes = [
-    "Gradual speed increase",
-    "60 second max",
-    "Race against yourself",
-    "No going back",
-    "Speed is your weapon"
+    "Survival is the goal",
+    "You can't see what's coming",
+    "Everything wants to eat you",
+    "Size matters",
+    "You are the prey"
 ];
 
 function Voting() {
