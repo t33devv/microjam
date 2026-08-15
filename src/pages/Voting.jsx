@@ -2,32 +2,28 @@ import { useState, useEffect } from 'react';
 
 import apiClient from '../services/apiClient';
 
-const themes = [
-    "Survival is the goal",
-    "You can't see what's coming",
-    "Everything wants to eat you",
-    "Size matters",
-    "You are the prey"
-];
-
 function Voting() {
     const [votingError, setVotingError] = useState(null);
     const [selectedTheme, setSelectedTheme] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [themes, setThemes] = useState([]);
 
     useEffect(() => {
-        checkExistingVote();
+        loadPage();
     }, []);
 
-    const checkExistingVote = async () => {
+    const loadPage = async () => {
         try {
-            const response = await apiClient.get(`/votes/current`);
-            
-            if (response.data.hasVoted) {
-                setSelectedTheme(response.data.selectedTheme);
+            const [prereqsRes, voteRes] = await Promise.all([
+                apiClient.get('/prerequisites'),
+                apiClient.get('/votes/current').catch(() => ({ data: { hasVoted: false } })),
+            ]);
+            setThemes(Array.isArray(prereqsRes.data) ? prereqsRes.data : []);
+            if (voteRes.data?.hasVoted) {
+                setSelectedTheme(voteRes.data.selectedTheme);
             }
         } catch (error) {
-            console.error('Error checking vote:', error);
+            console.error('Error loading voting page:', error);
         } finally {
             setLoading(false);
         }

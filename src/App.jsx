@@ -10,6 +10,7 @@ import Voting from './pages/Voting'
 import VotingResults from './pages/VotingResults'
 import NotFound from './pages/NotFound'
 import DiscordRedirect from './pages/DiscordRedirect'
+import Admin from './pages/Admin'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/voting" element={<Voting />} />
         <Route path="/voting/results" element={<VotingResults />} />
         <Route path="/discord" element={<DiscordRedirect />} />
+        <Route path="/admin" element={<Admin />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />

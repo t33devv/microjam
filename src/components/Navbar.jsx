@@ -8,12 +8,6 @@ import { saveAuthToken, clearAuthToken } from "../services/authToken";
 function Navbar() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [showAdminPanel, setShowAdminPanel] = useState(false);
-    const [adminList, setAdminList] = useState([]);
-    const [adminsLoading, setAdminsLoading] = useState(false);
-    const [adminsError, setAdminsError] = useState(null);
-    const [newAdminId, setNewAdminId] = useState("");
-    const [savingAdmin, setSavingAdmin] = useState(false);
 
     useEffect(() => {
         syncTokenFromUrl();
@@ -73,57 +67,6 @@ function Navbar() {
         window.history.replaceState({}, '', newUrl);
     }
 
-    useEffect(() => {
-        if (showAdminPanel && user?.isAdmin) {
-            fetchAdmins();
-        }
-    }, [showAdminPanel, user]);
-
-    const fetchAdmins = async () => {
-        try {
-            setAdminsLoading(true);
-            setAdminsError(null);
-            const response = await apiClient.get('/admins');
-            setAdminList(Array.isArray(response.data) ? response.data : []);
-        } catch (error) {
-            console.error('Failed to load admins', error);
-            setAdminsError('Failed to load admins');
-        } finally {
-            setAdminsLoading(false);
-        }
-    };
-
-    const handleAddAdmin = async () => {
-        if (!newAdminId.trim()) return;
-        try {
-            setSavingAdmin(true);
-            setAdminsError(null);
-            await apiClient.post('/admins', { discordId: newAdminId.trim() });
-            setNewAdminId('');
-            await fetchAdmins();
-        } catch (error) {
-            console.error('Failed to add admin', error);
-            setAdminsError(error?.response?.data?.error || 'Failed to add admin');
-        } finally {
-            setSavingAdmin(false);
-        }
-    };
-
-    const handleRemoveAdmin = async (discordId) => {
-        if (!discordId) return;
-        try {
-            setSavingAdmin(true);
-            setAdminsError(null);
-            await apiClient.delete(`/admins/${discordId}`);
-            await fetchAdmins();
-        } catch (error) {
-            console.error('Failed to remove admin', error);
-            setAdminsError(error?.response?.data?.error || 'Failed to remove admin');
-        } finally {
-            setSavingAdmin(false);
-        }
-    };
-
   return (
     <header>
         <div className="flex flex-col md:grid md:grid-cols-custom-layout w-full gap-2 md:gap-4 px-4 md:px-0">
@@ -171,72 +114,12 @@ function Navbar() {
                                 </span>
                             </span>
                             {user?.isAdmin && (
-                                <div className="relative">
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowAdminPanel((prev) => !prev)}
-                                        className="bg-primary text-black font-bold rounded px-2 py-1 text-[10px] md:text-xs"
-                                    >
-                                        admins
-                                    </button>
-                                    {showAdminPanel && (
-                                        <div className="absolute top-full right-0 mt-2 w-64 bg-bg border border-li rounded shadow-lg p-3 z-50">
-                                            <div className="flex justify-between items-center mb-2">
-                                                <p className="text-white font-bold text-sm">Admin IDs</p>
-                                                <button
-                                                    type="button"
-                                                    className="text-muted text-xs"
-                                                    onClick={() => setShowAdminPanel(false)}
-                                                >
-                                                    close
-                                                </button>
-                                            </div>
-                                            {adminsError && (
-                                                <p className="text-xs text-red-400 mb-2">{adminsError}</p>
-                                            )}
-                                            {adminsLoading ? (
-                                                <p className="text-xs text-muted">loading...</p>
-                                            ) : (
-                                                <div className="max-h-40 overflow-y-auto space-y-1 mb-3">
-                                                    {adminList.length === 0 ? (
-                                                        <p className="text-xs text-muted">No admins yet.</p>
-                                                    ) : (
-                                                        adminList.map((id) => (
-                                                            <div key={id} className="flex items-center justify-between bg-black/40 px-2 py-1 rounded text-xs text-white">
-                                                                <span className="truncate" title={id}>{id}</span>
-                                                                <button
-                                                                    type="button"
-                                                                    disabled={savingAdmin || id === String(user.discordId) || id === String(user.discord_id)}
-                                                                    onClick={() => handleRemoveAdmin(id)}
-                                                                    className="text-red-400 disabled:opacity-40"
-                                                                >
-                                                                    remove
-                                                                </button>
-                                                            </div>
-                                                        ))
-                                                    )}
-                                                </div>
-                                            )}
-                                            <div className="space-y-2">
-                                                <input
-                                                    type="text"
-                                                    placeholder="Discord ID"
-                                                    value={newAdminId}
-                                                    onChange={(e) => setNewAdminId(e.target.value)}
-                                                    className="w-full bg-black/40 border border-li text-white text-xs px-2 py-1 rounded"
-                                                />
-                                                <button
-                                                    type="button"
-                                                    onClick={handleAddAdmin}
-                                                    disabled={savingAdmin || !newAdminId.trim()}
-                                                    className="w-full bg-primary text-black font-bold text-xs py-1 rounded disabled:opacity-50"
-                                                >
-                                                    add admin
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
+                                <Link
+                                    to="/admin"
+                                    className="bg-primary text-black font-bold rounded px-2 py-1 text-[10px] md:text-xs no-underline hover:opacity-80"
+                                >
+                                    admin
+                                </Link>
                             )}
                         </span>
                     ) : (
