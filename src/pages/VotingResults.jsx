@@ -4,11 +4,11 @@ import useAdminStatus from '../hooks/useAdminStatus';
 import NotFound from './NotFound';
 
 const themes = [
-    "Random generation",
-    "No boats allowed",
-    "Rising tide",
-    "You start with nothing",
-    "Shrinking map"
+    "Survival is the goal",
+    "You can't see what's coming",
+    "Everything wants to eat you",
+    "Size matters",
+    "You are the prey"
 ];
 
 const COLORS = ['#F25859', '#6a9956', '#4A90D9', '#E8A838', '#9B59B6'];
