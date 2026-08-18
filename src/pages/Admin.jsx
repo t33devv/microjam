@@ -514,6 +514,144 @@ function VoteTallySection() {
   );
 }
 
+function formatCellValue(value) {
+  if (value === null || value === undefined) return <span className="text-li/50 italic">null</span>;
+  if (typeof value === 'boolean') return value ? 'true' : 'false';
+  if (value instanceof Date) return value.toISOString();
+  if (typeof value === 'object') return JSON.stringify(value);
+  const str = String(value);
+  return str.length > 80 ? str.slice(0, 80) + '…' : str;
+}
+
+function DatabaseSection() {
+  const [tables, setTables] = useState([]);
+  const [selectedTable, setSelectedTable] = useState('');
+  const [pageData, setPageData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [limit, setLimit] = useState(50);
+  const [offset, setOffset] = useState(0);
+  const [orderBy, setOrderBy] = useState('');
+  const [order, setOrder] = useState('desc');
+
+  useEffect(() => {
+    apiClient.get('/admin/db/tables')
+      .then(({ data }) => {
+        const list = data?.tables || [];
+        setTables(list);
+        if (list.length > 0) setSelectedTable(list[0]);
+      })
+      .catch((err) => setError(err?.response?.data?.error || 'Failed to load tables'));
+  }, []);
+
+  const loadPage = useCallback(async () => {
+    if (!selectedTable) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const params = { limit, offset };
+      if (orderBy) params.orderBy = orderBy;
+      if (order) params.order = order;
+      const { data } = await apiClient.get(`/admin/db/tables/${selectedTable}`, { params });
+      setPageData(data);
+      if (!orderBy && data?.orderBy) setOrderBy(data.orderBy);
+    } catch (err) {
+      setError(err?.response?.data?.error || 'Failed to load rows');
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedTable, limit, offset, orderBy, order]);
+
+  useEffect(() => { loadPage(); }, [loadPage]);
+
+  const changeTable = (name) => {
+    setSelectedTable(name);
+    setOffset(0);
+    setOrderBy('');
+  };
+
+  const total = pageData?.total ?? 0;
+  const rows = pageData?.rows ?? [];
+  const columns = pageData?.columns ?? [];
+  const hasPrev = offset > 0;
+  const hasNext = offset + limit < total;
+
+  return (
+    <section className={sectionClass}>
+      <p className="text-white text-xl font-bold">🗄️ database browser</p>
+      <p className="text-li text-sm mt-1">View raw data from the Supabase Postgres database.</p>
+
+      <div className="mt-4 flex flex-wrap gap-3 items-end">
+        <div>
+          <label className={labelClass}>Table</label>
+          <select className={inputClass} value={selectedTable} onChange={(e) => changeTable(e.target.value)}>
+            {tables.map((t) => <option key={t} value={t}>{t}</option>)}
+          </select>
+        </div>
+        <div>
+          <label className={labelClass}>Order by</label>
+          <input className={inputClass} value={orderBy} onChange={(e) => setOrderBy(e.target.value)} placeholder="column name" />
+        </div>
+        <div>
+          <label className={labelClass}>Direction</label>
+          <select className={inputClass} value={order} onChange={(e) => setOrder(e.target.value)}>
+            <option value="desc">desc</option>
+            <option value="asc">asc</option>
+          </select>
+        </div>
+        <div>
+          <label className={labelClass}>Page size</label>
+          <select className={inputClass} value={limit} onChange={(e) => { setLimit(Number(e.target.value)); setOffset(0); }}>
+            {[10, 25, 50, 100, 200].map((n) => <option key={n} value={n}>{n}</option>)}
+          </select>
+        </div>
+        <button type="button" onClick={loadPage} disabled={loading} className={btnMini}>{loading ? 'loading…' : 'refresh'}</button>
+      </div>
+
+      <StatusBanner message={error} type="error" />
+
+      {pageData && (
+        <div className="mt-4">
+          <p className="text-li text-sm">
+            Showing rows <span className="text-white font-bold">{total === 0 ? 0 : offset + 1}</span>–<span className="text-white font-bold">{Math.min(offset + limit, total)}</span> of <span className="text-white font-bold">{total}</span>
+          </p>
+
+          <div className="mt-3 overflow-x-auto border border-li/30 rounded">
+            <table className="min-w-full text-xs">
+              <thead className="bg-black/60">
+                <tr>
+                  {columns.map((col) => (
+                    <th key={col} className="text-left px-3 py-2 text-primary font-bold uppercase tracking-widest border-b border-li/30 whitespace-nowrap">{col}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {rows.length === 0 ? (
+                  <tr><td colSpan={columns.length || 1} className="text-li text-center py-6">No rows.</td></tr>
+                ) : rows.map((row, i) => (
+                  <tr key={row.id ?? i} className="odd:bg-black/30 even:bg-black/10">
+                    {columns.map((col) => (
+                      <td key={col} className="px-3 py-2 text-white border-b border-li/10 whitespace-nowrap font-mono">
+                        {formatCellValue(row[col])}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-3 flex gap-2 justify-between items-center">
+            <button className={btnMini} disabled={!hasPrev || loading} onClick={() => setOffset(Math.max(0, offset - limit))}>← prev</button>
+            <span className="text-li text-xs">page {Math.floor(offset / limit) + 1} / {Math.max(1, Math.ceil(total / limit))}</span>
+            <button className={btnMini} disabled={!hasNext || loading} onClick={() => setOffset(offset + limit)}>next →</button>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function Admin() {
   const { isAdmin, loadingAdmin } = useAdminStatus();
 
@@ -548,6 +686,7 @@ function Admin() {
       <div className="mt-8 space-y-6">
         <VotingPeriodSection />
         <VoteTallySection />
+        <DatabaseSection />
         <PrerequisitesSection />
         <JamsSection />
         <CreatorsSection />
