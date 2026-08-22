@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 
 import Jam from "../components/Jam";
 import apiClient from "../services/apiClient";
@@ -158,11 +159,27 @@ function Jams() {
 
                         return (
                             <div key={jam.id} className="relative">
-                                <Jam 
-                                    name={jam.title} 
+                                <Jam
+                                    name={jam.title}
                                     url={jam.itchUrl}
                                     imageUrl={jam.img}
                                 />
+                                {jam.status === 'voting' && (
+                                    <Link
+                                        to={`/jam/${jam.id}/vote`}
+                                        className="absolute top-3 left-3 bg-primary text-black font-bold px-3 py-1 rounded no-underline hover:opacity-80"
+                                    >
+                                        vote now →
+                                    </Link>
+                                )}
+                                {jam.status === 'completed' && (
+                                    <Link
+                                        to={`/jam/${jam.id}/results`}
+                                        className="absolute top-3 left-3 bg-ac text-black font-bold px-3 py-1 rounded no-underline hover:opacity-80 text-xs"
+                                    >
+                                        results
+                                    </Link>
+                                )}
                                 {isAdmin && !loadingAdmin && (
                                     <button
                                         type="button"

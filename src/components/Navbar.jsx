@@ -23,6 +23,15 @@ function Navbar() {
         window.location.href = loginUrl.toString();
     }
 
+    const handleItchLink = () => {
+        if (typeof window === 'undefined') return;
+
+        const loginUrl = new URL(`${API_URL}/auth/itch/login`);
+        loginUrl.searchParams.set('redirectUrl', window.location.origin);
+
+        window.location.href = loginUrl.toString();
+    }
+
     const handleLogout = async (e) => {
         e.preventDefault();
         
@@ -107,12 +116,21 @@ function Navbar() {
                         <span className="text-white italic underline relative group border border-white px-1 md:px-2 py-0.5 md:py-1 text-xs md:text-base flex items-center gap-2">
                             <span className="relative">
                                 <a href="#" onClick={handleLogout} className="cursor-pointer">
-                                    *{user.username}*
+                                    *{user.username || user.itch_username}*
                                 </a>
                                 <span className="absolute bottom-full left-1 transform -translate-x-1/2 mb-2 px-2 py-1 bg-bg border border-li text-nm text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                                     click to sign out
                                 </span>
                             </span>
+                            {!user?.itch_id && (
+                                <a
+                                    href="#"
+                                    onClick={(e) => { e.preventDefault(); handleItchLink(); }}
+                                    className="bg-ac text-black font-bold rounded px-2 py-1 text-[10px] md:text-xs no-underline hover:opacity-80"
+                                >
+                                    link itch
+                                </a>
+                            )}
                             {user?.isAdmin && (
                                 <Link
                                     to="/admin"
@@ -123,8 +141,9 @@ function Navbar() {
                             )}
                         </span>
                     ) : (
-                        <span className="text-primary underline">
+                        <span className="text-primary underline flex items-center gap-2">
                             <a href="#" onClick={handleLogin}>LOGIN</a>
+                            <a href="#" onClick={(e) => { e.preventDefault(); handleItchLink(); }} className="text-ac">itch</a>
                         </span>
                     )}
                 </p>

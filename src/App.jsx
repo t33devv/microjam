@@ -11,6 +11,9 @@ import VotingResults from './pages/VotingResults'
 import NotFound from './pages/NotFound'
 import DiscordRedirect from './pages/DiscordRedirect'
 import Admin from './pages/Admin'
+import ItchCallback from './pages/ItchCallback'
+import JamVote from './pages/JamVote'
+import JamResults from './pages/JamResults'
 
 function App() {
   return (
@@ -25,6 +28,9 @@ function App() {
         <Route path="/voting/results" element={<VotingResults />} />
         <Route path="/discord" element={<DiscordRedirect />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/auth/itch/callback" element={<ItchCallback />} />
+        <Route path="/jam/:id/vote" element={<JamVote />} />
+        <Route path="/jam/:id/results" element={<JamResults />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
