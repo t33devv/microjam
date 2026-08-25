@@ -79,9 +79,11 @@ function JamVote() {
 
     const progress = useMemo(() => {
         if (!jam || entries.length === 0) return { rated: 0, total: 0, pct: 0 };
-        const catCount = jam.categories.length;
-        const total = entries.length * catCount;
-        const rated = entries.reduce((sum, e) => sum + Object.keys(e.votes || {}).filter((c) => jam.categories.includes(c)).length, 0);
+        const total = entries.length;
+        const rated = entries.reduce((sum, e) => {
+            const hasAny = Object.keys(e.votes || {}).some((c) => jam.categories.includes(c));
+            return sum + (hasAny ? 1 : 0);
+        }, 0);
         return { rated, total, pct: total ? Math.round((rated / total) * 100) : 0 };
     }, [entries, jam]);
 
@@ -134,7 +136,7 @@ function JamVote() {
                     <div className="flex-1 h-2 bg-li/30 rounded overflow-hidden">
                         <div className="h-full bg-primary transition-all" style={{ width: `${progress.pct}%` }} />
                     </div>
-                    <span className="text-nm text-sm">{progress.rated} / {progress.total} rated</span>
+                    <span className="text-nm text-sm">{progress.rated} / {progress.total} games rated</span>
                 </div>
 
                 {error && <p className="text-primary text-base mt-4">{error}</p>}
