@@ -116,13 +116,13 @@ function Navbar() {
                         <span className="text-white italic underline relative group border border-white px-1 md:px-2 py-0.5 md:py-1 text-xs md:text-base flex items-center gap-2">
                             <span className="relative">
                                 <a href="#" onClick={handleLogout} className="cursor-pointer">
-                                    *{user.username || user.itch_username}*
+                                    *{user.username || user.itch_username || user.itchUsername}*
                                 </a>
                                 <span className="absolute bottom-full left-1 transform -translate-x-1/2 mb-2 px-2 py-1 bg-bg border border-li text-nm text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                                     click to sign out
                                 </span>
                             </span>
-                            {!user?.itch_id && (
+                            {!(user?.itch_id || user?.itchId) && (
                                 <a
                                     href="#"
                                     onClick={(e) => { e.preventDefault(); handleItchLink(); }}
