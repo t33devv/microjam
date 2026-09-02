@@ -35,7 +35,7 @@ function JamsSection() {
     try {
       const { data } = await apiClient.get('/jams');
       setJams(Array.isArray(data) ? data : []);
-    } catch (e) {
+    } catch {
       setError('Failed to load jams');
     } finally {
       setLoading(false);
@@ -652,6 +652,205 @@ function DatabaseSection() {
   );
 }
 
+function formatDuration(seconds) {
+  if (!seconds || seconds < 0) return '—';
+  if (seconds < 60) return `${seconds}s`;
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return s ? `${m}m ${s}s` : `${m}m`;
+}
+
+function VoterAnalyticsSection() {
+  const [jams, setJams] = useState([]);
+  const [jamId, setJamId] = useState('');
+  const [itchName, setItchName] = useState('');
+  const [analytics, setAnalytics] = useState(null);
+  const [voters, setVoters] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [loadingList, setLoadingList] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    apiClient.get('/jams').then(({ data }) => {
+      const votingOrCompleted = (data || []).filter((j) => j.status === 'voting' || j.status === 'completed');
+      setJams(votingOrCompleted.slice().reverse());
+      const firstVoting = votingOrCompleted.find((j) => j.status === 'voting');
+      if (firstVoting) setJamId(String(firstVoting.id));
+      else if (votingOrCompleted.length) setJamId(String(votingOrCompleted[votingOrCompleted.length - 1].id));
+    }).catch(() => setError('Failed to load jams'));
+  }, []);
+
+  const search = async (e) => {
+    e?.preventDefault();
+    if (!jamId || !itchName.trim()) return;
+    setLoading(true);
+    setError(null);
+    setAnalytics(null);
+    try {
+      const { data } = await apiClient.get(`/admin/jams/${jamId}/voter`, { params: { itch: itchName.trim() } });
+      setAnalytics(data);
+    } catch (err) {
+      setError(err?.response?.data?.error || 'Voter not found');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadVoters = async () => {
+    if (!jamId) return;
+    setLoadingList(true);
+    setError(null);
+    try {
+      const { data } = await apiClient.get(`/admin/jams/${jamId}/voters`);
+      setVoters(data?.voters || []);
+    } catch (err) {
+      setError(err?.response?.data?.error || 'Failed to load voters');
+    } finally {
+      setLoadingList(false);
+    }
+  };
+
+  return (
+    <section className={sectionClass}>
+      <p className="text-white text-xl font-bold">🕵️ voter analytics</p>
+      <p className="text-li text-sm mt-1">Inspect a voter's behavior to catch spam-rating and vote manipulation.</p>
+
+      <form onSubmit={search} className="mt-4 flex flex-wrap gap-3 items-end">
+        <div>
+          <label className={labelClass}>Jam</label>
+          <select className={inputClass} value={jamId} onChange={(e) => { setJamId(e.target.value); setAnalytics(null); setVoters(null); }}>
+            {jams.map((j) => <option key={j.id} value={j.id}>#{j.id} — {j.title}</option>)}
+          </select>
+        </div>
+        <div className="flex-1 min-w-[200px]">
+          <label className={labelClass}>itch.io username</label>
+          <input className={inputClass} value={itchName} onChange={(e) => setItchName(e.target.value)} placeholder="e.g. 121a121" />
+        </div>
+        <button type="submit" disabled={loading || !jamId || !itchName.trim()} className={btnPrimary}>{loading ? 'Searching…' : 'Search'}</button>
+        <button type="button" onClick={loadVoters} disabled={loadingList || !jamId} className={btnSecondary}>{loadingList ? 'Loading…' : 'List all voters'}</button>
+      </form>
+
+      <StatusBanner message={error} type="error" />
+
+      {analytics && (
+        <div className="mt-6 space-y-4">
+          <div className="bg-black/40 border border-li/20 rounded p-4">
+            <p className="text-white font-bold text-lg">
+              {analytics.user.itchUsername}
+              {analytics.user.discordUsername && <span className="text-li text-sm ml-2">(discord: {analytics.user.discordUsername})</span>}
+            </p>
+            <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+              <div><span className="text-li">Games rated:</span> <span className="text-white font-bold">{analytics.summary.gamesRated}</span></div>
+              <div><span className="text-li">Total ratings:</span> <span className="text-white font-bold">{analytics.summary.totalRatings}</span></div>
+              <div><span className="text-li">Avg score:</span> <span className="text-white font-bold">{analytics.summary.avgScore}</span></div>
+              <div><span className="text-li">Avg time/game:</span> <span className="text-white font-bold">{formatDuration(analytics.summary.avgDurationSeconds)}</span></div>
+              <div><span className="text-li">Avg gap between games:</span> <span className="text-white font-bold">{formatDuration(analytics.summary.avgGapSeconds)}</span></div>
+              <div><span className="text-li">Median gap:</span> <span className="text-white font-bold">{formatDuration(analytics.summary.medianGapSeconds)}</span></div>
+              <div className="col-span-2 md:col-span-2">
+                <span className="text-li">Score distribution: </span>
+                <span className="text-white font-mono text-xs">
+                  {Object.entries(analytics.summary.distribution).map(([k, v]) => `${k}★:${v}`).join('  ')}
+                </span>
+              </div>
+            </div>
+            {analytics.summary.flags.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {analytics.summary.flags.map((f) => (
+                  <span key={f.code} className="bg-red-500/20 border border-red-400 text-red-300 text-xs font-bold px-2 py-1 rounded">
+                    ⚠ {f.label}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="overflow-x-auto border border-li/30 rounded">
+            <table className="min-w-full text-xs">
+              <thead className="bg-black/60">
+                <tr>
+                  <th className="text-left px-3 py-2 text-primary font-bold uppercase tracking-widest border-b border-li/30">Game</th>
+                  <th className="text-left px-3 py-2 text-primary font-bold uppercase tracking-widest border-b border-li/30">Ratings</th>
+                  <th className="text-left px-3 py-2 text-primary font-bold uppercase tracking-widest border-b border-li/30">First → Last</th>
+                  <th className="text-left px-3 py-2 text-primary font-bold uppercase tracking-widest border-b border-li/30">Duration</th>
+                  <th className="text-left px-3 py-2 text-primary font-bold uppercase tracking-widest border-b border-li/30">Scores</th>
+                </tr>
+              </thead>
+              <tbody>
+                {analytics.games.map((g) => (
+                  <tr key={g.entryId} className="odd:bg-black/30 even:bg-black/10">
+                    <td className="px-3 py-2 text-white border-b border-li/10">
+                      <a href={g.url} target="_blank" rel="noreferrer" className="text-primary underline">{g.title}</a>
+                    </td>
+                    <td className="px-3 py-2 text-white border-b border-li/10">{g.ratingCount}</td>
+                    <td className="px-3 py-2 text-li border-b border-li/10 font-mono text-[10px]">
+                      {new Date(g.firstAt).toLocaleTimeString()}<br />
+                      {new Date(g.lastAt).toLocaleTimeString()}
+                    </td>
+                    <td className={`px-3 py-2 border-b border-li/10 font-bold ${g.durationSeconds < 15 && g.ratingCount > 1 ? 'text-red-300' : 'text-white'}`}>
+                      {formatDuration(g.durationSeconds)}
+                    </td>
+                    <td className="px-3 py-2 text-white border-b border-li/10 font-mono text-[10px]">
+                      {Object.entries(g.categories).map(([cat, sc]) => `${cat.slice(0, 3)}:${sc}`).join('  ')}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {voters && (
+        <div className="mt-6">
+          <p className="text-li text-sm mb-2">All voters for this jam (sorted by flag count):</p>
+          <div className="overflow-x-auto border border-li/30 rounded">
+            <table className="min-w-full text-xs">
+              <thead className="bg-black/60">
+                <tr>
+                  <th className="text-left px-3 py-2 text-primary font-bold uppercase tracking-widest border-b border-li/30">Voter</th>
+                  <th className="text-left px-3 py-2 text-primary font-bold uppercase tracking-widest border-b border-li/30">Games</th>
+                  <th className="text-left px-3 py-2 text-primary font-bold uppercase tracking-widest border-b border-li/30">Ratings</th>
+                  <th className="text-left px-3 py-2 text-primary font-bold uppercase tracking-widest border-b border-li/30">Avg score</th>
+                  <th className="text-left px-3 py-2 text-primary font-bold uppercase tracking-widest border-b border-li/30">Avg time/game</th>
+                  <th className="text-left px-3 py-2 text-primary font-bold uppercase tracking-widest border-b border-li/30">Median gap</th>
+                  <th className="text-left px-3 py-2 text-primary font-bold uppercase tracking-widest border-b border-li/30">Flags</th>
+                </tr>
+              </thead>
+              <tbody>
+                {voters.length === 0 && (
+                  <tr><td colSpan={7} className="text-li text-center py-4">No voters yet.</td></tr>
+                )}
+                {voters.map((v) => (
+                  <tr
+                    key={v.userId}
+                    className={`odd:bg-black/30 even:bg-black/10 cursor-pointer hover:bg-primary/10 ${v.flags.length > 0 ? 'border-l-2 border-red-400' : ''}`}
+                    onClick={() => { if (v.itchUsername) { setItchName(v.itchUsername); search(); } }}
+                  >
+                    <td className="px-3 py-2 text-white border-b border-li/10">
+                      {v.itchUsername || <span className="text-li">(no itch)</span>}
+                      {v.discordUsername && <span className="text-li text-[10px] ml-2">d:{v.discordUsername}</span>}
+                    </td>
+                    <td className="px-3 py-2 text-white border-b border-li/10">{v.gamesRated}</td>
+                    <td className="px-3 py-2 text-white border-b border-li/10">{v.totalRatings}</td>
+                    <td className="px-3 py-2 text-white border-b border-li/10">{v.avgScore}</td>
+                    <td className="px-3 py-2 text-white border-b border-li/10">{formatDuration(v.avgDurationSeconds)}</td>
+                    <td className="px-3 py-2 text-white border-b border-li/10">{formatDuration(v.medianGapSeconds)}</td>
+                    <td className="px-3 py-2 border-b border-li/10">
+                      {v.flags.length === 0
+                        ? <span className="text-ac">clean</span>
+                        : <span className="text-red-300 font-bold">{v.flags.length} ⚠</span>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function Admin() {
   const { isAdmin, loadingAdmin } = useAdminStatus();
 
@@ -684,6 +883,7 @@ function Admin() {
       </p>
 
       <div className="mt-8 space-y-6">
+        <VoterAnalyticsSection />
         <VotingPeriodSection />
         <VoteTallySection />
         <DatabaseSection />

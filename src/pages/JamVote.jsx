@@ -63,15 +63,23 @@ function JamVote() {
         const key = `${entryId}:${category}`;
         setSavingKey(key);
         // optimistic
+        const prevEntries = entries;
         setEntries((prev) => prev.map((e) => e.id === entryId
             ? { ...e, votes: { ...e.votes, [category]: score } }
             : e
         ));
         try {
             await apiClient.post(`/jams/${id}/votes`, { entryId, category, score });
+            setError(null);
         } catch (err) {
             console.error('vote failed', err);
-            setError(err?.response?.data?.error || 'Failed to submit vote.');
+            const data = err?.response?.data;
+            setEntries(prevEntries);
+            if (err?.response?.status === 429 && data?.waitSeconds) {
+                setError(`⏱ Cooldown: wait ${data.waitSeconds}s before rating a new game.`);
+            } else {
+                setError(data?.error || 'Failed to submit vote.');
+            }
         } finally {
             setSavingKey(null);
         }
@@ -130,6 +138,9 @@ function JamVote() {
                 <p className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[6rem]">🎮 {jam?.title} — voting</p>
                 <p className="text-nm text-sm md:text-base font-bold mt-[1rem]">
                     Rate each entry 1–5 stars per category. Your vote saves automatically. You can change any rating before voting closes.
+                </p>
+                <p className="text-li text-xs md:text-sm mt-[0.5rem]">
+                    Anti-spam: after rating one game, wait 5 minutes before starting another. Adjusting ratings on the same game has no cooldown.
                 </p>
 
                 <div className="mt-4 flex items-center gap-3">
