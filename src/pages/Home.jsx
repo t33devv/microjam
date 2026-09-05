@@ -38,10 +38,18 @@ function Home() {
         };
     }, []);
 
-    const upcomingJam = useMemo(
-        () => jams.find((jam) => jam.status === "upcoming"),
+    const featuredJam = useMemo(
+        () => jams.find((jam) => jam.status === "active")
+            || jams.find((jam) => jam.status === "voting")
+            || jams.find((jam) => jam.status === "upcoming"),
         [jams],
     );
+
+    const featuredLabel = featuredJam?.status === "active"
+        ? "🔥 active micro jam"
+        : featuredJam?.status === "voting"
+            ? "🎮 vote on micro jam"
+            : "⏳ upcoming micro jam";
   return (
     <>
         <title>48-hour Biweekly Game Jam with Prizes | Micro Jam</title>
@@ -69,17 +77,17 @@ function Home() {
                         sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
                     ></iframe>
                     <div>
-                        <h2 className="text-white text-xl md:text-2xl font-bold">⏳ upcoming micro jam</h2>
+                        <h2 className="text-white text-xl md:text-2xl font-bold">{featuredLabel}</h2>
                         {loadingJams ? (
-                            <p className="text-li text-base font-bold mt-4">Loading upcoming jam...</p>
+                            <p className="text-li text-base font-bold mt-4">Loading jam...</p>
                         ) : jamsError ? (
                             <p className="text-primary text-base font-bold mt-4">{jamsError}</p>
-                        ) : upcomingJam ? (
+                        ) : featuredJam ? (
                             <Jam
-                                key={upcomingJam.id}
-                                name={upcomingJam.title}
-                                url={upcomingJam.itchUrl}
-                                imageUrl={upcomingJam.img}
+                                key={featuredJam.id}
+                                name={featuredJam.title}
+                                url={featuredJam.itchUrl}
+                                imageUrl={featuredJam.img}
                             />
                         ) : (
                             <p className="text-li text-base font-bold mt-4">No upcoming jam has been announced yet. Check back soon!</p>
