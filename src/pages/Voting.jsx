@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 
+import { API_URL } from '../config';
 import apiClient from '../services/apiClient';
 
 function Voting() {
@@ -7,6 +8,7 @@ function Voting() {
     const [selectedTheme, setSelectedTheme] = useState(null);
     const [loading, setLoading] = useState(true);
     const [themes, setThemes] = useState([]);
+    const [requiresItch, setRequiresItch] = useState(false);
 
     useEffect(() => {
         loadPage();
@@ -22,6 +24,9 @@ function Voting() {
             if (voteRes.data?.hasVoted) {
                 setSelectedTheme(voteRes.data.selectedTheme);
             }
+            if (voteRes.data?.requiresItch) {
+                setRequiresItch(true);
+            }
         } catch (error) {
             console.error('Error loading voting page:', error);
         } finally {
@@ -32,12 +37,25 @@ function Voting() {
     const handleVote = async (theme) => {
         try {
             await apiClient.post(`/votes`, { theme });
-            
+            setVotingError(null);
             setSelectedTheme(theme);
         } catch (error) {
             console.error('Error submitting vote:', error);
-            setVotingError('Please log in to vote!');
+            const status = error?.response?.status;
+            const msg = error?.response?.data?.error;
+            if (status === 403 && /itch/i.test(msg || '')) {
+                setRequiresItch(true);
+                setVotingError(msg);
+            } else {
+                setVotingError(msg || 'Please log in to vote!');
+            }
         }
+    };
+
+    const linkItch = () => {
+        const url = new URL(`${API_URL}/auth/itch/login`);
+        url.searchParams.set('redirectUrl', window.location.href);
+        window.location.href = url.toString();
     };
 
     if (loading) return <div className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[6rem] px-4">Loading...</div>;
@@ -51,6 +69,21 @@ function Voting() {
                 <p className="text-nm text-sm md:text-base font-bold mt-[1rem]">
                     Click one of the prerequisites below to vote for it. Don't worry if you misclick, you can change your vote by clicking a different one.
                 </p>
+
+                {requiresItch && (
+                    <div className="mt-[1rem] border border-primary/40 p-4 rounded">
+                        <p className="text-nm text-sm md:text-base font-bold">
+                            You need to link your itch.io account to vote. This prevents double-voting through duplicate Discord accounts.
+                        </p>
+                        <button
+                            type="button"
+                            onClick={linkItch}
+                            className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-primary text-black font-bold rounded hover:opacity-80"
+                        >
+                            Link itch.io
+                        </button>
+                    </div>
+                )}
 
                 <b className="text-primary text-base md:text-lg font-bold mt-[2rem]">{votingError}</b>
 

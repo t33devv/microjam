@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import apiClient from '../services/apiClient';
 import useAdminStatus from '../hooks/useAdminStatus';
 
-const JAM_STATUSES = ['upcoming', 'active', 'completed'];
+const JAM_STATUSES = ['upcoming', 'active', 'voting', 'completed'];
 const EMPTY_JAM = { title: '', status: 'upcoming', itchUrl: '', img: '' };
 const EMPTY_CREATOR = { name: '', url: '', pfp: '' };
 const EMPTY_WINNER = { place: '1', category: 'overall', jam: '', gameName: '', gameUrl: '', contributors: [] };
