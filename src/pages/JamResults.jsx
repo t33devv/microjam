@@ -54,9 +54,23 @@ function JamResults() {
                                 {r.coverUrl && (
                                     <img src={r.coverUrl} alt="" className="w-16 h-16 object-cover border border-li/40" />
                                 )}
-                                <a href={r.url} target="_blank" rel="noreferrer" className="text-primary underline font-bold break-words">
-                                    {r.title}
-                                </a>
+                                <div className="min-w-0 flex-1">
+                                    <a href={r.url} target="_blank" rel="noreferrer" className="text-primary underline font-bold break-words">
+                                        {r.title}
+                                    </a>
+                                    {r.contributors?.length > 0 && (
+                                        <p className="text-nm text-xs mt-1 break-words">
+                                            by {r.contributors.map((c, idx) => (
+                                                <span key={`${c.name}-${idx}`}>
+                                                    {idx > 0 && ', '}
+                                                    {c.url
+                                                        ? <a href={c.url} target="_blank" rel="noreferrer" className="underline">{c.name}</a>
+                                                        : c.name}
+                                                </span>
+                                            ))}
+                                        </p>
+                                    )}
+                                </div>
                             </div>
                             <div className="flex-1 grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-1 text-sm">
                                 <div className="col-span-2 md:col-span-3 text-white font-bold">
