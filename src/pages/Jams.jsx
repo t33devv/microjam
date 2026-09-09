@@ -172,15 +172,13 @@ function Jams() {
                                         vote now →
                                     </Link>
                                 )}
-                                {(jam.status === 'completed' || jam.status === 'voting') && jam.itchUrl && (
-                                    <a
-                                        href={`${jam.itchUrl.replace(/\/$/, '')}/results`}
-                                        target="_blank"
-                                        rel="noreferrer"
+                                {(jam.status === 'completed' || jam.status === 'voting') && (
+                                    <Link
+                                        to={`/jam/${jam.id}/results`}
                                         className={`absolute ${jam.status === 'voting' ? 'top-12' : 'top-3'} left-3 bg-ac text-black font-bold px-3 py-1 rounded no-underline hover:opacity-80 text-xs`}
                                     >
                                         results
-                                    </a>
+                                    </Link>
                                 )}
                                 {isAdmin && !loadingAdmin && (
                                     <button
