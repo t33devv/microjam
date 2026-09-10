@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import apiClient from '../services/apiClient';
@@ -9,6 +9,19 @@ function JamResults() {
     const [error, setError] = useState(null);
     const [jam, setJam] = useState(null);
     const [results, setResults] = useState([]);
+    const [engineFilter, setEngineFilter] = useState('all');
+
+    const availableEngines = useMemo(() => {
+        const set = new Set();
+        for (const r of results) for (const eng of r.engines || []) set.add(eng);
+        return Array.from(set);
+    }, [results]);
+
+    const filteredResults = useMemo(() => (
+        engineFilter === 'all'
+            ? results
+            : results.filter((r) => (r.engines || []).includes(engineFilter))
+    ), [results, engineFilter]);
 
     useEffect(() => {
         const load = async () => {
@@ -43,11 +56,36 @@ function JamResults() {
                 <p className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[6rem]">🏆 {jam?.title} — results</p>
                 <p className="text-nm text-sm md:text-base font-bold mt-[1rem]">Ranked by average overall score across all categories.</p>
 
+                {availableEngines.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setEngineFilter('all')}
+                            className={`px-3 py-1 text-sm font-bold border rounded-full ${engineFilter === 'all' ? 'bg-primary text-black border-primary' : 'text-nm border-li/40 hover:border-primary/60'}`}
+                        >
+                            All ({results.length})
+                        </button>
+                        {availableEngines.map((eng) => {
+                            const count = results.filter((r) => (r.engines || []).includes(eng)).length;
+                            return (
+                                <button
+                                    key={eng}
+                                    type="button"
+                                    onClick={() => setEngineFilter(eng)}
+                                    className={`px-3 py-1 text-sm font-bold border rounded-full ${engineFilter === eng ? 'bg-primary text-black border-primary' : 'text-nm border-li/40 hover:border-primary/60'}`}
+                                >
+                                    {eng} ({count})
+                                </button>
+                            );
+                        })}
+                    </div>
+                )}
+
                 <div className="mt-6 flex flex-col gap-3">
-                    {results.length === 0 && (
-                        <p className="text-li">No votes yet.</p>
+                    {filteredResults.length === 0 && (
+                        <p className="text-li">{results.length === 0 ? 'No votes yet.' : 'No entries match this filter.'}</p>
                     )}
-                    {results.map((r, i) => (
+                    {filteredResults.map((r, i) => (
                         <div key={r.entryId} className="border border-li/40 p-4 flex flex-col md:flex-row gap-4">
                             <div className="flex items-start gap-3 md:w-1/3">
                                 <span className="text-primary font-bold text-xl w-8">#{i + 1}</span>
