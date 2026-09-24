@@ -6,6 +6,7 @@ import useAdminStatus from '../hooks/useAdminStatus';
 const JAM_STATUSES = ['upcoming', 'active', 'voting', 'completed'];
 const EMPTY_JAM = { title: '', status: 'upcoming', itchUrl: '', img: '' };
 const EMPTY_CREATOR = { name: '', url: '', pfp: '' };
+const EMPTY_SPONSOR = { name: '', url: '', logoUrl: '' };
 const EMPTY_WINNER = { place: '1', category: 'overall', jam: '', gameName: '', gameUrl: '', contributors: [] };
 
 const sectionClass = 'border border-li/30 bg-black/30 rounded-2xl p-4 md:p-6';
@@ -390,6 +391,178 @@ function CreatorsSection() {
           </div>
         ))}
       </div>
+    </section>
+  );
+}
+
+function SponsorsSection() {
+  const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [form, setForm] = useState(EMPTY_SPONSOR);
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data } = await apiClient.get('/sponsors');
+      setList(Array.isArray(data) ? data : []);
+    } catch {
+      setError('Failed to load sponsors');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const reset = () => {
+    setEditingIndex(null);
+    setForm(EMPTY_SPONSOR);
+    setError(null);
+  };
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setError(null);
+    try {
+      if (editingIndex !== null) {
+        await apiClient.put(`/admin/sponsors/${editingIndex}`, form);
+      } else {
+        await apiClient.post('/admin/sponsors', form);
+      }
+      reset();
+      await load();
+    } catch (err) {
+      setError(err?.response?.data?.error || 'Failed to save sponsor');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const remove = async (index) => {
+    if (!window.confirm('Delete this sponsor?')) return;
+    try {
+      await apiClient.delete(`/admin/sponsors/${index}`);
+      await load();
+    } catch (err) {
+      setError(err?.response?.data?.error || 'Failed to delete');
+    }
+  };
+
+  return (
+    <section className={sectionClass}>
+      <p className="text-white text-xl font-bold">🤝 sponsors</p>
+      <p className="text-li text-sm mt-1">Logos shown on <Link to="/sponsors" className="text-primary underline">/sponsors</Link>.</p>
+
+      <form onSubmit={submit} className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div>
+          <label className={labelClass}>Name</label>
+          <input className={inputClass} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Ziva" />
+        </div>
+        <div>
+          <label className={labelClass}>Website URL</label>
+          <input className={inputClass} value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} placeholder="https://ziva..." />
+        </div>
+        <div>
+          <label className={labelClass}>Logo URL</label>
+          <input className={inputClass} value={form.logoUrl} onChange={(e) => setForm({ ...form, logoUrl: e.target.value })} placeholder="https://.../logo.png" />
+        </div>
+        <div className="md:col-span-3 flex gap-3">
+          <button type="submit" disabled={saving} className={btnPrimary}>{saving ? 'Saving…' : editingIndex !== null ? 'Update sponsor' : 'Add sponsor'}</button>
+          {editingIndex !== null && <button type="button" onClick={reset} className={btnSecondary}>Cancel</button>}
+        </div>
+      </form>
+
+      <StatusBanner message={error} type="error" />
+
+      <div className="mt-4 space-y-2">
+        {loading ? <p className="text-li text-sm">loading...</p> : list.map((s, index) => (
+          <div key={`${index}-${s.name}`} className="flex items-center justify-between bg-black/40 px-3 py-2 rounded border border-li/20">
+            <div className="flex items-center gap-3 min-w-0">
+              {s.logoUrl && <img src={s.logoUrl} alt="" className="w-8 h-8 object-contain" />}
+              <div className="min-w-0">
+                <p className="text-white text-sm font-bold truncate">{s.name}</p>
+                <p className="text-li text-xs truncate">{s.url}</p>
+              </div>
+            </div>
+            <div className="flex gap-2 ml-3">
+              <button className={btnMini} onClick={() => { setEditingIndex(index); setForm({ name: s.name, url: s.url, logoUrl: s.logoUrl || '' }); }}>edit</button>
+              <button className={btnDanger} onClick={() => remove(index)}>del</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function SponsorStatsSection() {
+  const [stats, setStats] = useState({ editions: '', joiners: '', discordMembers: '' });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+  const [message, setMessage] = useState(null);
+
+  useEffect(() => {
+    apiClient.get('/sponsor-stats')
+      .then(({ data }) => setStats({
+        editions: data?.editions ?? 0,
+        joiners: data?.joiners ?? 0,
+        discordMembers: data?.discordMembers ?? 0,
+      }))
+      .catch(() => setError('Failed to load stats'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const save = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setError(null);
+    setMessage(null);
+    try {
+      await apiClient.put('/admin/sponsor-stats', {
+        editions: Number(stats.editions),
+        joiners: Number(stats.joiners),
+        discordMembers: Number(stats.discordMembers),
+      });
+      setMessage('Saved.');
+    } catch (err) {
+      setError(err?.response?.data?.error || 'Failed to save');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <section className={sectionClass}>
+      <p className="text-white text-xl font-bold">📊 sponsor page stats</p>
+      <p className="text-li text-sm mt-1">The three big numbers at the top of /sponsors.</p>
+
+      {loading ? <p className="text-li text-sm mt-4">loading...</p> : (
+        <form onSubmit={save} className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div>
+            <label className={labelClass}>Editions run</label>
+            <input type="number" min="0" className={inputClass} value={stats.editions} onChange={(e) => setStats({ ...stats, editions: e.target.value })} />
+          </div>
+          <div>
+            <label className={labelClass}>Total joiners</label>
+            <input type="number" min="0" className={inputClass} value={stats.joiners} onChange={(e) => setStats({ ...stats, joiners: e.target.value })} />
+          </div>
+          <div>
+            <label className={labelClass}>Discord members</label>
+            <input type="number" min="0" className={inputClass} value={stats.discordMembers} onChange={(e) => setStats({ ...stats, discordMembers: e.target.value })} />
+          </div>
+          <div className="md:col-span-3">
+            <button type="submit" disabled={saving} className={btnPrimary}>{saving ? 'Saving…' : 'Save stats'}</button>
+          </div>
+        </form>
+      )}
+
+      <StatusBanner message={error} type="error" />
+      <StatusBanner message={message} />
     </section>
   );
 }
@@ -890,6 +1063,8 @@ function Admin() {
         <PrerequisitesSection />
         <JamsSection />
         <CreatorsSection />
+        <SponsorsSection />
+        <SponsorStatsSection />
         <AdminsSection />
         <section className={sectionClass}>
           <p className="text-white text-xl font-bold">🏆 winners</p>

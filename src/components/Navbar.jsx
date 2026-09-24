@@ -110,6 +110,12 @@ function Navbar() {
                     <span className="text-muted mx-1 md:mx-[0.5rem]">
                         /
                     </span>
+                    <span className="text-primary underline">
+                        <Link to="/sponsors">sponsors</Link>
+                    </span>
+                    <span className="text-muted mx-1 md:mx-[0.5rem]">
+                        /
+                    </span>
                     {loading ? (
                         <span className="text-muted">...</span>
                     ) : user ? (
