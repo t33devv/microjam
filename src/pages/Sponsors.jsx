@@ -32,7 +32,7 @@ const PERKS = [
 const FAQS = [
     {
         q: 'how many people will actually see my logo?',
-        a: 'Each jam page gets ~40–100 joins, and every page stays live forever — all 60+ prior editions still get traffic. Season sponsors get their logo on 6 pages plus microjam.xyz.',
+        a: 'Each jam page gets 250+ joins, and every page stays live forever — all 60+ prior editions still get traffic. Season sponsors get their logo on 6 pages plus microjam.xyz.',
     },
     {
         q: 'can i offer credits or subscriptions instead of cash?',
