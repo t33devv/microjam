@@ -8,15 +8,6 @@ const TIERS = [
     { key: 'gold', name: 'Gold', jam: '$150', season: '$750', line: 'Silver + blog post + Discord announcement to 4,900+ members.' },
 ];
 
-const STRIPE_LINKS = {
-    bronze_jam: 'STRIPE_BRONZE_JAM',
-    silver_jam: 'STRIPE_SILVER_JAM',
-    gold_jam: 'STRIPE_GOLD_JAM',
-    bronze_season: 'STRIPE_BRONZE_SEASON',
-    silver_season: 'STRIPE_SILVER_SEASON',
-    gold_season: 'STRIPE_GOLD_SEASON',
-};
-
 const PERKS = [
     { label: 'Logo on jam page (itch.io)', bronze: true, silver: true, gold: true },
     { label: 'Logo on microjam.xyz homepage', bronze: true, silver: true, gold: true },
@@ -113,24 +104,24 @@ function Sponsors() {
                             <p className="text-li text-xs md:text-sm mt-1">{col.sub}</p>
                             <div className="mt-4 flex flex-col gap-3">
                                 {TIERS.map((t) => (
-                                    <a
+                                    <div
                                         key={t.key}
-                                        href={STRIPE_LINKS[`${t.key}_${col.key}`]}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="border border-li/40 hover:border-primary/70 p-3 flex items-center justify-between gap-3 no-underline"
+                                        className="border border-li/40 p-3 flex items-center justify-between gap-3"
                                     >
                                         <div className="min-w-0">
                                             <p className="text-white font-bold">{t.name}</p>
                                             <p className="text-nm text-xs mt-1 truncate">{t.line}</p>
                                         </div>
                                         <span className="text-primary font-bold text-lg md:text-xl shrink-0">{t[col.key]}</span>
-                                    </a>
+                                    </div>
                                 ))}
                             </div>
                         </div>
                     ))}
                 </div>
+                <p className="text-li text-xs md:text-sm mt-3 italic">
+                    to reserve a tier, email <a href="mailto:tommy@microjam.dev" className="text-primary underline not-italic">tommy@microjam.dev</a> — we'll send an invoice / stripe link.
+                </p>
 
                 {/* Perks table */}
                 <h2 className="text-white text-xl md:text-2xl font-bold mt-[3rem]">🎁 what you get</h2>
@@ -227,7 +218,7 @@ function Sponsors() {
                 {/* How it works */}
                 <h2 className="text-white text-xl md:text-2xl font-bold mt-[3rem]">⚙️ how it works</h2>
                 <ol className="mt-4 flex flex-col gap-3 max-w-3xl list-decimal list-inside">
-                    <li className="text-nm text-sm md:text-base font-bold">pick a tier above and click through to stripe. payment lands, we build your listing the same day.</li>
+                    <li className="text-nm text-sm md:text-base font-bold">email tommy@microjam.dev with the tier you want. we send an invoice / stripe link — payment lands, we build your listing the same day.</li>
                     <li className="text-nm text-sm md:text-base font-bold">send us your logo, the link you want it pointing at (with a UTM if you like), and the promo code or prize you want to offer entrants.</li>
                     <li className="text-nm text-sm md:text-base font-bold">your logo goes live on the jam page and site before the next jam starts. you get a post kit with 4 pre-made images and suggested share dates.</li>
                 </ol>
@@ -246,7 +237,7 @@ function Sponsors() {
                 {/* Bottom CTA */}
                 <div className="mt-[3rem] mb-[4rem] text-center border-t border-li/40 pt-6">
                     <p className="text-white text-lg md:text-xl font-bold">
-                        ready to sponsor? pick a tier above, or email <a href="mailto:tommy@microjam.dev" className="text-primary underline">tommy@microjam.dev</a>.
+                        ready to sponsor? email <a href="mailto:tommy@microjam.dev" className="text-primary underline">tommy@microjam.dev</a> with the tier you want.
                     </p>
                     <p className="text-li text-sm mt-2">lock-in for the next jam is 7 days before it starts.</p>
                 </div>
