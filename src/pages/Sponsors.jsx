@@ -17,8 +17,6 @@ const STRIPE_LINKS = {
     gold_season: 'STRIPE_GOLD_SEASON',
 };
 
-const MEDIA_KIT_URL = '/media/microjam_media_kit.pdf';
-
 const PERKS = [
     { label: 'Logo on jam page (itch.io)', bronze: true, silver: true, gold: true },
     { label: 'Logo on microjam.xyz homepage', bronze: true, silver: true, gold: true },
@@ -243,24 +241,6 @@ function Sponsors() {
                             <p className="text-nm text-sm mt-1">{f.a}</p>
                         </div>
                     ))}
-                </div>
-
-                {/* Media kit */}
-                <h2 className="text-white text-xl md:text-2xl font-bold mt-[3rem]">📎 media kit</h2>
-                <div className="mt-4">
-                    <a
-                        href={MEDIA_KIT_URL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-block bg-primary text-black font-bold px-4 py-2 rounded no-underline hover:opacity-80"
-                    >
-                        download media kit (PDF)
-                    </a>
-                    <ul className="mt-3 text-li text-xs md:text-sm list-disc list-inside">
-                        <li>logo pack</li>
-                        <li>past-edition metrics</li>
-                        <li>screenshots of winning games</li>
-                    </ul>
                 </div>
 
                 {/* Bottom CTA */}
