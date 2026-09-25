@@ -27,10 +27,10 @@ function MoreEditions() {
 
     return (
         <>
-            <title>More editions — partnered & co-hosted jams | Micro Jam</title>
+            <title>Extra editions — partnered & co-hosted jams | Micro Jam</title>
             <meta name="description" content="Jams Micro Jam co-hosts or partners on — Code for a Cause, SlapJam, and more." />
             <div className="px-4 md:px-0">
-                <p className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[6rem]">🤝 more editions</p>
+                <p className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[6rem]">🤝 extra editions</p>
                 <p className="text-nm text-sm md:text-base font-bold mt-[1rem]">
                     jams we co-host or partner on. not part of the main Micro Jam series.
                 </p>

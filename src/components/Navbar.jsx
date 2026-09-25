@@ -99,7 +99,7 @@ function Navbar() {
                         /
                     </span>
                     <span className="text-primary underline">
-                        <Link to="/more-editions">more editions</Link>
+                        <Link to="/more-editions">more</Link>
                     </span>
                     <span className="text-muted mx-1 md:mx-[0.5rem]">
                         /
