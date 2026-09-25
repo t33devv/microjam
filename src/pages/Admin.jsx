@@ -7,6 +7,7 @@ const JAM_STATUSES = ['upcoming', 'active', 'voting', 'completed'];
 const EMPTY_JAM = { title: '', status: 'upcoming', itchUrl: '', img: '' };
 const EMPTY_CREATOR = { name: '', url: '', pfp: '' };
 const EMPTY_SPONSOR = { name: '', url: '', logoUrl: '' };
+const EMPTY_PARTNERED = { title: '', url: '', img: '', blurb: '' };
 const EMPTY_WINNER = { place: '1', category: 'overall', jam: '', gameName: '', gameUrl: '', contributors: [] };
 
 const sectionClass = 'border border-li/30 bg-black/30 rounded-2xl p-4 md:p-6';
@@ -490,6 +491,114 @@ function SponsorsSection() {
             </div>
             <div className="flex gap-2 ml-3">
               <button className={btnMini} onClick={() => { setEditingIndex(index); setForm({ name: s.name, url: s.url, logoUrl: s.logoUrl || '' }); }}>edit</button>
+              <button className={btnDanger} onClick={() => remove(index)}>del</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function PartneredJamsSection() {
+  const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [form, setForm] = useState(EMPTY_PARTNERED);
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data } = await apiClient.get('/partnered-jams');
+      setList(Array.isArray(data) ? data : []);
+    } catch {
+      setError('Failed to load partnered jams');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const reset = () => {
+    setEditingIndex(null);
+    setForm(EMPTY_PARTNERED);
+    setError(null);
+  };
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setError(null);
+    try {
+      if (editingIndex !== null) {
+        await apiClient.put(`/admin/partnered-jams/${editingIndex}`, form);
+      } else {
+        await apiClient.post('/admin/partnered-jams', form);
+      }
+      reset();
+      await load();
+    } catch (err) {
+      setError(err?.response?.data?.error || 'Failed to save partnered jam');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const remove = async (index) => {
+    if (!window.confirm('Delete this partnered jam?')) return;
+    try {
+      await apiClient.delete(`/admin/partnered-jams/${index}`);
+      await load();
+    } catch (err) {
+      setError(err?.response?.data?.error || 'Failed to delete');
+    }
+  };
+
+  return (
+    <section className={sectionClass}>
+      <p className="text-white text-xl font-bold">🤝 more editions (partnered jams)</p>
+      <p className="text-li text-sm mt-1">Shown on <Link to="/more-editions" className="text-primary underline">/more-editions</Link>. Co-hosted / partnered jams outside the Micro Jam series.</p>
+
+      <form onSubmit={submit} className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label className={labelClass}>Title</label>
+          <input className={inputClass} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Code for a Cause" />
+        </div>
+        <div>
+          <label className={labelClass}>URL</label>
+          <input className={inputClass} value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} placeholder="https://itch.io/jam/..." />
+        </div>
+        <div>
+          <label className={labelClass}>Image URL</label>
+          <input className={inputClass} value={form.img} onChange={(e) => setForm({ ...form, img: e.target.value })} placeholder="https://.../cover.png" />
+        </div>
+        <div>
+          <label className={labelClass}>Blurb (optional)</label>
+          <input className={inputClass} value={form.blurb} onChange={(e) => setForm({ ...form, blurb: e.target.value })} placeholder="world's largest AI jam — co-hosted" />
+        </div>
+        <div className="md:col-span-2 flex gap-3">
+          <button type="submit" disabled={saving} className={btnPrimary}>{saving ? 'Saving…' : editingIndex !== null ? 'Update' : 'Add partnered jam'}</button>
+          {editingIndex !== null && <button type="button" onClick={reset} className={btnSecondary}>Cancel</button>}
+        </div>
+      </form>
+
+      <StatusBanner message={error} type="error" />
+
+      <div className="mt-4 space-y-2">
+        {loading ? <p className="text-li text-sm">loading...</p> : list.map((p, index) => (
+          <div key={`${index}-${p.title}`} className="flex items-center justify-between bg-black/40 px-3 py-2 rounded border border-li/20">
+            <div className="flex items-center gap-3 min-w-0">
+              {p.img && <img src={p.img} alt="" className="w-10 h-10 object-cover border border-li/20" />}
+              <div className="min-w-0">
+                <p className="text-white text-sm font-bold truncate">{p.title}</p>
+                <p className="text-li text-xs truncate">{p.url}</p>
+              </div>
+            </div>
+            <div className="flex gap-2 ml-3">
+              <button className={btnMini} onClick={() => { setEditingIndex(index); setForm({ title: p.title, url: p.url, img: p.img, blurb: p.blurb || '' }); }}>edit</button>
               <button className={btnDanger} onClick={() => remove(index)}>del</button>
             </div>
           </div>
@@ -1065,6 +1174,7 @@ function Admin() {
         <CreatorsSection />
         <SponsorsSection />
         <SponsorStatsSection />
+        <PartneredJamsSection />
         <AdminsSection />
         <section className={sectionClass}>
           <p className="text-white text-xl font-bold">🏆 winners</p>

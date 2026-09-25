@@ -15,6 +15,7 @@ import ItchCallback from './pages/ItchCallback'
 import JamVote from './pages/JamVote'
 import JamResults from './pages/JamResults'
 import Sponsors from './pages/Sponsors'
+import MoreEditions from './pages/MoreEditions'
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
         <Route path="/jam/:id/vote" element={<JamVote />} />
         <Route path="/jam/:id/results" element={<JamResults />} />
         <Route path="/sponsors" element={<Sponsors />} />
+        <Route path="/more-editions" element={<MoreEditions />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
