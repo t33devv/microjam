@@ -143,6 +143,18 @@ function JamVote() {
                     Anti-spam: after rating one game, wait 5 minutes before starting another. Adjusting ratings on the same game has no cooldown.
                 </p>
 
+                {jam?.minRatingsForEligibility > 0 && (
+                    <div className={`mt-4 border p-3 ${progress.rated >= jam.minRatingsForEligibility ? 'border-primary/70 bg-primary/10' : 'border-ac/70 bg-ac/10'}`}>
+                        <p className="text-white text-sm md:text-base font-bold">
+                            {progress.rated >= jam.minRatingsForEligibility ? '✅' : '⚠️'} rate at least {jam.minRatingsForEligibility} games to make your own entry eligible for prizes.
+                        </p>
+                        <p className="text-nm text-xs md:text-sm mt-1">
+                            you've rated {progress.rated} game{progress.rated === 1 ? '' : 's'} so far
+                            {progress.rated < jam.minRatingsForEligibility && ` — ${jam.minRatingsForEligibility - progress.rated} to go.`}
+                        </p>
+                    </div>
+                )}
+
                 <div className="mt-4 flex items-center gap-3">
                     <div className="flex-1 h-2 bg-li/30 rounded overflow-hidden">
                         <div className="h-full bg-primary transition-all" style={{ width: `${progress.pct}%` }} />

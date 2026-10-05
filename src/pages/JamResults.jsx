@@ -56,6 +56,12 @@ function JamResults() {
                 <p className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[6rem]">🏆 {jam?.title} — results</p>
                 <p className="text-nm text-sm md:text-base font-bold mt-[1rem]">Ranked by average overall score across all categories.</p>
 
+                {jam?.minRatingsForEligibility > 0 && (
+                    <p className="text-li text-xs md:text-sm mt-2">
+                        entries marked <span className="text-ac font-bold">ineligible</span> did not meet the {jam.minRatingsForEligibility}-rating minimum (their creators didn't rate enough other games to qualify for prizes).
+                    </p>
+                )}
+
                 {availableEngines.length > 0 && (
                     <div className="mt-4 flex flex-wrap gap-2">
                         <button
@@ -96,6 +102,9 @@ function JamResults() {
                                     <a href={r.url} target="_blank" rel="noreferrer" className="text-primary underline font-bold break-words">
                                         {r.title}
                                     </a>
+                                    {r.eligible === false && (
+                                        <span className="inline-block ml-2 px-2 py-0.5 text-[10px] md:text-xs font-bold bg-ac/20 border border-ac/60 text-ac rounded align-middle">ineligible</span>
+                                    )}
                                     {r.contributors?.length > 0 && (
                                         <p className="text-nm text-xs mt-1 break-words">
                                             by {r.contributors.map((c, idx) => (
