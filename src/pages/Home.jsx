@@ -106,6 +106,10 @@ function Home() {
                         <span className="text-li font-bold before:content-['//_']">top tier dev godot AI assistant</span>
                     </div>
                     <div className="flex flex-col justify-between border-l-4 border-li p-4 md:p-5 transition-all duration-300 group-hover:opacity-30 group-hover:border-bg group-hover:hover:opacity-100 group-hover:hover:border-l-[24px] group-hover:hover:border-primary">
+                        <a href="https://xorin.ai/?utm_source=microjam" target="_blank" className="text-primary text-lg md:text-xl underline">Xorin</a>
+                        <span className="text-li font-bold before:content-['//_']">Unity tool for building games faster</span>
+                    </div>
+                    <div className="flex flex-col justify-between border-l-4 border-li p-4 md:p-5 transition-all duration-300 group-hover:opacity-30 group-hover:border-bg group-hover:hover:opacity-100 group-hover:hover:border-l-[24px] group-hover:hover:border-primary">
                         <a href="" target="_blank" className="text-primary text-lg md:text-xl underline">Easel</a>
                         <span className="text-li font-bold before:content-['//_']">special programming lang for games</span>
                     </div>
@@ -116,10 +120,6 @@ function Home() {
                     <div className="flex flex-col justify-between border-l-4 border-li p-4 md:p-5 transition-all duration-300 group-hover:opacity-30 group-hover:border-bg group-hover:hover:opacity-100 group-hover:hover:border-l-[24px] group-hover:hover:border-primary">
                         <a href="https://1bitdragon.com/?utm_source=microjam" target="_blank" className="text-primary text-lg md:text-xl underline">1BitDragon</a>
                         <span className="text-li font-bold before:content-['//_']">simple music-making tool for game devs</span>
-                    </div>
-                    <div className="flex flex-col justify-between border-l-4 border-li p-4 md:p-5 transition-all duration-300 group-hover:opacity-30 group-hover:border-bg group-hover:hover:opacity-100 group-hover:hover:border-l-[24px] group-hover:hover:border-primary">
-                        <a href="https://xorin.ai/?utm_source=microjam" target="_blank" className="text-primary text-lg md:text-xl underline">Xorin</a>
-                        <span className="text-li font-bold before:content-['//_']">Unity tool for building games faster</span>
                     </div>
                 </section>
             </div>
