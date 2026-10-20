@@ -124,6 +124,53 @@ function Home() {
                 </section>
             </div>
         </div>
+
+        <div className="mt-[3rem] md:mt-[5rem] px-4 md:px-0">
+            <h2 className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[4rem]">❓ frequently asked questions</h2>
+            <div className="text-base md:text-lg font-bold">
+                <section className="group mt-[1rem]">
+                    {[
+                        {
+                            q: "If I'm in a team, do all members have to submit the game?",
+                            a: "No, only one person should submit it. You can add your team members to the game page.",
+                        },
+                        {
+                            q: "Can I submit a game I already made?",
+                            a: "No, you can only submit games made in the given timeframe.",
+                        },
+                        {
+                            q: "Can I use premade assets?",
+                            a: "Yes, as long as you have permission to use them, or they're your own.",
+                        },
+                        {
+                            q: "Can I use AI (artificial intelligence)?",
+                            a: "Yes, AI is allowed.",
+                        },
+                        {
+                            q: "What's a prerequisite?",
+                            a: "A prerequisite is something your game must follow. It is voted on and released once the Jam starts.",
+                        },
+                        {
+                            q: "Does my game have to follow the theme and prerequisite?",
+                            a: "No, but both are part of the rating criteria, so try to integrate them into your game.",
+                        },
+                        {
+                            q: "Is there a prize for winning?",
+                            a: "Yes, we offer numerous prizes. Check the jam page for a full breakdown.",
+                        },
+                        {
+                            q: "Can someone win 2 awards?",
+                            a: "Yes and no. Someone can win both a top 3 award and a \"Best Ziva / Easel / Xorin Entry\" award. Their prize includes both awards plus the cash prize.",
+                        },
+                    ].map((f) => (
+                        <div key={f.q} className="flex flex-col justify-between border-l-4 border-li p-4 md:p-5 transition-all duration-300 group-hover:opacity-30 group-hover:border-bg group-hover:hover:opacity-100 group-hover:hover:border-l-[24px] group-hover:hover:border-primary">
+                            <span className="text-primary text-lg md:text-xl">{f.q}</span>
+                            <span className="text-li font-bold before:content-['//_']">{f.a}</span>
+                        </div>
+                    ))}
+                </section>
+            </div>
+        </div>
     </>
   )
 }
