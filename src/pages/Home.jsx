@@ -127,9 +127,14 @@ function Home() {
 
         <div className="mt-[3rem] md:mt-[5rem] px-4 md:px-0">
             <h2 className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[4rem]">❓ frequently asked questions</h2>
+            <p className="text-li text-xs md:text-sm font-bold mt-2">hover a question to reveal the answer.</p>
             <div className="text-base md:text-lg font-bold">
-                <section className="group mt-[1rem]">
+                <section className="group/list mt-[1rem]">
                     {[
+                        {
+                            q: "Where do I vote on games?",
+                            a: "All official voting happens on the Micro Jam website (microjam.xyz) — not on itch.io. Only votes on microjam.xyz count toward prizes.",
+                        },
                         {
                             q: "If I'm in a team, do all members have to submit the game?",
                             a: "No, only one person should submit it. You can add your team members to the game page.",
@@ -163,9 +168,9 @@ function Home() {
                             a: "Yes and no. Someone can win both a top 3 award and a \"Best Ziva / Easel / Xorin Entry\" award. Their prize includes both awards plus the cash prize.",
                         },
                     ].map((f) => (
-                        <div key={f.q} className="flex flex-col justify-between border-l-4 border-li p-4 md:p-5 transition-all duration-300 group-hover:opacity-30 group-hover:border-bg group-hover:hover:opacity-100 group-hover:hover:border-l-[24px] group-hover:hover:border-primary">
+                        <div key={f.q} className="group/card flex flex-col justify-between border-l-4 border-li p-4 md:p-5 transition-all duration-300 group-hover/list:opacity-30 group-hover/list:border-bg hover:opacity-100 hover:border-l-[24px] hover:border-primary">
                             <span className="text-primary text-lg md:text-xl">{f.q}</span>
-                            <span className="text-li font-bold before:content-['//_']">{f.a}</span>
+                            <span className="hidden group-hover/card:block text-li font-bold before:content-['//_'] mt-1">{f.a}</span>
                         </div>
                     ))}
                 </section>
