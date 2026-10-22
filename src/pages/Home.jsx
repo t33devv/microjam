@@ -99,7 +99,7 @@ function Home() {
 
         <div className="mt-[3rem] md:mt-[5rem] px-4 md:px-0">
             <h2 className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[4rem]">🤖 our AI policy</h2>
-            <p className="text-nm text-sm md:text-base font-bold mt-[1rem]">AI is inevitable. Reliance on it isn't.</p>
+            <p className="text-nm text-sm md:text-base font-bold mt-[1rem]">don't rely on AI!</p>
             <div className="text-base md:text-lg font-bold">
                 <section className="mt-[1rem]">
                     <div className="flex flex-col justify-between border-l-4 border-primary p-4 md:p-5">
