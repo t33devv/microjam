@@ -98,6 +98,27 @@ function Home() {
         </div>
 
         <div className="mt-[3rem] md:mt-[5rem] px-4 md:px-0">
+            <h2 className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[4rem]">🤖 our AI policy</h2>
+            <p className="text-nm text-sm md:text-base font-bold mt-[1rem]">AI is inevitable. Reliance on it isn't.</p>
+            <div className="text-base md:text-lg font-bold">
+                <section className="mt-[1rem]">
+                    <div className="flex flex-col justify-between border-l-4 border-primary p-4 md:p-5">
+                        <span className="text-primary text-lg md:text-xl">AI is a tool, not a replacement</span>
+                        <span className="text-li font-bold before:content-['//_'] mt-1">use it to aid your work — not to deploy 500 Claude agents and speedrun your game while you sleep.</span>
+                    </div>
+                    <div className="flex flex-col justify-between border-l-4 border-primary p-4 md:p-5">
+                        <span className="text-primary text-lg md:text-xl">games overly reliant on AI will be disqualified</span>
+                        <span className="text-li font-bold before:content-['//_'] mt-1">if your art, mechanics, and code are all generated — your entry doesn't align with the jam's goals and ruins the experience for people building their own games.</span>
+                    </div>
+                    <div className="flex flex-col justify-between border-l-4 border-primary p-4 md:p-5">
+                        <span className="text-primary text-lg md:text-xl">human creativity is unmatched</span>
+                        <span className="text-li font-bold before:content-['//_'] mt-1">AI only works as a tool to help you make games, not replace you.</span>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <div className="mt-[3rem] md:mt-[5rem] px-4 md:px-0">
             <h2 className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[4rem]">🤝 our beloved partners</h2>
             <div className="text-base md:text-lg font-bold">
                 <section id="list" className="group mt-[1rem]">
