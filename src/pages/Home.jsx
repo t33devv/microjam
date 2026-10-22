@@ -104,7 +104,7 @@ function Home() {
                 <section className="mt-[1rem]">
                     <div className="flex flex-col justify-between border-l-4 border-primary p-4 md:p-5">
                         <span className="text-primary text-lg md:text-xl">AI is a tool, not a replacement</span>
-                        <span className="text-li font-bold before:content-['//_'] mt-1">use it to aid your work ... not to deploy 500 Claude agents and speedrun your game while you sleep.</span>
+                        <span className="text-li font-bold before:content-['//_'] mt-1">don't use it to deploy 500 Claude agents and speedrun your game while you sleep! AI should AID your work.</span>
                     </div>
                     <div className="flex flex-col justify-between border-l-4 border-primary p-4 md:p-5">
                         <span className="text-primary text-lg md:text-xl">games overly reliant on AI will be disqualified</span>
