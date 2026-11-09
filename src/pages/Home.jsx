@@ -99,18 +99,9 @@ function Home() {
 
         <div className="mt-[3rem] md:mt-[5rem] px-4 md:px-0">
             <h2 className="text-white text-xl md:text-2xl font-bold mt-[3rem] md:mt-[4rem]">🤖 our AI policy</h2>
-            <p className="text-nm text-sm md:text-base font-bold mt-[1rem]">don't rely on AI!</p>
-            <div className="text-base md:text-lg font-bold">
-                <section className="mt-[1rem]">
-                    <div className="flex flex-col justify-between border-l-4 border-primary p-4 md:p-5">
-                        <span className="text-primary text-lg md:text-xl">AI is a tool, not a replacement</span>
-                        <span className="text-li font-bold before:content-['//_'] mt-1">don't use it to deploy 500 Claude agents and speedrun your game while you sleep! AI should AID your work.</span>
-                    </div>
-                    <div className="flex flex-col justify-between border-l-4 border-primary p-4 md:p-5">
-                        <span className="text-primary text-lg md:text-xl">games overly reliant on AI will be disqualified</span>
-                        <span className="text-li font-bold before:content-['//_'] mt-1">if your art, mechanics, and code are all generated, your entry doesn't align with the jam's goals and ruins the experience for people building their own games.</span>
-                    </div>
-                </section>
+            <div className="mt-[1rem] border-l-4 border-primary p-4 md:p-5">
+                <p className="text-primary text-lg md:text-xl font-bold">From Micro Jam 69 and onwards, games with AI generated assets (art, music, sounds, 3d models, etc) will be disqualified.</p>
+                <p className="text-li font-bold before:content-['//_'] mt-3">AI is a tool, not a replacement! Feel free to use AI to help write code or debug, but AI art and sounds are not tolerated at all.</p>
             </div>
         </div>
 
